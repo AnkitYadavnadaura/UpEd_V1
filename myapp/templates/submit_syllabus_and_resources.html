@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduPlan - Smart Syllabus Analysis</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+   
+    <style>
+        * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    color: #333;
+    overflow-x: hidden;
+}
+
+/* Header */
+.header {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 1rem 0;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.nav {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 2rem;
+}
+
+.logo {
+    font-size: 1.8rem;
+    font-weight: bold;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-decoration: none;
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 2rem;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    transition: color 0.3s ease;
+    position: relative;
+}
+
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -5px;
+    left: 0;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    transition: width 0.3s ease;
+}
+
+.nav-links a:hover::after {
+    width: 100%;
+}
+
+/* Main Container */
+.main-container {
+    margin-top: 100px;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 2rem;
+}
+
+/* Hero Section */
+.hero {
+    text-align: center;
+    padding: 4rem 0;
+    color: white;
+    animation: fadeInUp 1s ease;
+}
+
+.hero h1 {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #fff, #e3f2fd);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.hero p {
+    font-size: 1.3rem;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+}
+
+/* Upload Section */
+.upload-section {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 3rem;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    margin: 2rem 0;
+    animation: slideInUp 0.8s ease;
+}
+
+.section-title {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.upload-form {
+    display: grid;
+    gap: 2rem;
+}
+
+.form-group {
+    position: relative;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #555;
+}
+
+/* Text Input Styles */
+.text-input {
+    width: 100%;
+    padding: 1rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: all 0.3s ease;
+    background: #f8f9ff;
+}
+
+.text-input:focus {
+    outline: none;
+    border-color: #667eea;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.input-help {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.file-upload {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    border: 3px dashed #ddd;
+    border-radius: 15px;
+    background: #f8f9ff;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.file-upload:hover {
+    border-color: #667eea;
+    background: #f0f4ff;
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+}
+
+.file-upload.drag-over {
+    border-color: #667eea;
+    background: #f0f4ff;
+    transform: scale(1.02);
+}
+
+.upload-icon {
+    font-size: 3rem;
+    color: #667eea;
+    margin-bottom: 1rem;
+    animation: bounce 2s infinite;
+}
+
+.upload-text {
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 0.5rem;
+}
+
+.upload-subtext {
+    font-size: 0.9rem;
+    color: #999;
+}
+
+.file-input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.file-preview {
+    display: none;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: #e8f5e8;
+    border-radius: 10px;
+    margin-top: 1rem;
+}
+
+.file-preview.show {
+    display: flex;
+}
+
+.file-info {
+    flex: 1;
+}
+
+.file-name {
+    font-weight: 600;
+    color: #2e7d32;
+}
+
+.file-size {
+    font-size: 0.9rem;
+    color: #4caf50;
+}
+
+.remove-file {
+    background: #ff5252;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.remove-file:hover {
+    background: #d32f2f;
+    transform: scale(1.1);
+}
+
+/* Submit Button */
+.submit-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 1.2rem 3rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    margin: 2rem auto;
+    display: block;
+    min-width: 200px;
+}
+
+.submit-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+}
+
+.submit-btn:active {
+    transform: translateY(-1px);
+}
+
+.submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-text {
+    transition: all 0.3s ease;
+}
+
+.btn-loader {
+    display: none;
+}
+
+.submit-btn.loading .btn-text {
+    opacity: 0;
+}
+
+.submit-btn.loading .btn-loader {
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 1s ease-in-out infinite;
+}
+
+/* Progress Bar */
+.progress-container {
+    display: none;
+    margin: 2rem 0;
+    animation: fadeIn 0.5s ease;
+}
+
+.progress-container.show {
+    display: block;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background: #e0e0e0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    width: 0%;
+    transition: width 0.3s ease;
+    border-radius: 4px;
+}
+
+.progress-text {
+    text-align: center;
+    margin-top: 1rem;
+    font-weight: 600;
+    color: #667eea;
+}
+
+/* Error Message */
+.error-message {
+    background: #ffebee;
+    color: #c62828;
+    padding: 1rem;
+    border-radius: 10px;
+    margin-bottom: 2rem;
+    border-left: 4px solid #f44336;
+    display: none;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.error-message.show {
+    display: flex;
+}
+
+/* Toast Notifications */
+.toast {
+    position: fixed;
+    top: 100px;
+    right: 2rem;
+    background: white;
+    color: #333;
+    padding: 1rem 2rem;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    transform: translateX(400px);
+    transition: all 0.3s ease;
+    z-index: 1001;
+    border-left: 4px solid #4caf50;
+    max-width: 350px;
+}
+
+.toast.show {
+    transform: translateX(0);
+}
+
+.toast.error {
+    border-left-color: #f44336;
+}
+
+.toast.warning {
+    border-left-color: #ff9800;
+}
+
+/* Floating Action Button */
+.fab {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    cursor: pointer;
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.fab:hover {
+    transform: scale(1.1) rotate(15deg);
+    box-shadow: 0 12px 35px rgba(102, 126, 234, 0.6);
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Floating Particles */
+.particle {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    pointer-events: none;
+    animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+    }
+    50% {
+        transform: translateY(-100px) rotate(180deg);
+        opacity: 0.5;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .nav {
+        padding: 0 1rem;
+    }
+
+    .nav-links {
+        display: none;
+    }
+
+    .hero h1 {
+        font-size: 2.5rem;
+    }
+
+    .hero p {
+        font-size: 1.1rem;
+    }
+
+    .upload-section {
+        padding: 2rem 1rem;
+    }
+
+    .fab {
+        bottom: 1rem;
+        right: 1rem;
+    }
+
+    .toast {
+        right: 1rem;
+        left: 1rem;
+    }
+}
+    </style>
+</head>
+<body>
+    <!-- Floating Particles -->
+    <div class="particle" style="top: 20%; left: 10%; width: 20px; height: 20px; animation-delay: 0s;"></div>
+    <div class="particle" style="top: 60%; left: 80%; width: 15px; height: 15px; animation-delay: 2s;"></div>
+    <div class="particle" style="top: 30%; left: 70%; width: 25px; height: 25px; animation-delay: 4s;"></div>
+    <div class="particle" style="top: 80%; left: 20%; width: 18px; height: 18px; animation-delay: 1s;"></div>
+
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <a href="#" class="logo">
+                <i class="fas fa-brain"></i> EduPlan
+            </a>
+            <ul class="nav-links">
+                <li><a href="#home"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="#dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="#courses"><i class="fas fa-book"></i> My Courses</a></li>
+                <li><a href="#profile"><i class="fas fa-user"></i> Profile</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Container -->
+    <main class="main-container">
+        <!-- Hero Section -->
+        <section class="hero">
+            <h1><i class="fas fa-magic"></i> Smart Syllabus Analysis</h1>
+            <p>Transform your syllabus into an organized, intelligent learning plan with AI-powered analysis</p>
+        </section>
+
+        <!-- Upload Section -->
+        <section class="upload-section">
+            <h2 class="section-title">
+                <i class="fas fa-upload"></i> Upload Your Syllabus
+            </h2>
+            
+            <!-- Error Message -->
+            <div class="error-message" id="errorMessage">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span id="errorText"></span>
+            </div>
+
+            <form class="upload-form" id="syllabusForm" method="post" enctype="multipart/form-data">
+                <!-- CSRF Token -->
+                <input type="hidden" name="csrfmiddlewaretoken" id="csrfToken">
+                
+
+
+                <!-- Syllabus Upload -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-file-alt"></i> Syllabus Document *
+                    </label>
+                    <div class="file-upload" id="syllabusUpload">
+                        <input type="file" class="file-input" id="syllabusFile" name="syllabus" accept=".pdf,.jpg,.jpeg,.png" required>
+                        <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                        <div class="upload-text">Drop your syllabus here or click to browse</div>
+                        <div class="upload-subtext">Supports PDF, JPG, PNG (Max 10MB)</div>
+                    </div>
+                    <div class="file-preview" id="syllabusPreview">
+                        <i class="fas fa-file-alt" style="color: #2e7d32; font-size: 1.5rem;"></i>
+                        <div class="file-info">
+                            <div class="file-name"></div>
+                            <div class="file-size"></div>
+                        </div>
+                        <button type="button" class="remove-file" onclick="removeFile('syllabus')">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Resources Upload -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-book-open"></i> Additional Resources (Optional)
+                    </label>
+                    <div class="file-upload" id="resourcesUpload">
+                        <input type="file" class="file-input" id="resourcesFile" name="resources" accept=".pdf">
+                        <i class="fas fa-plus-circle upload-icon"></i>
+                        <div class="upload-text">Drop additional resources here or click to browse</div>
+                        <div class="upload-subtext">PDF files only (Max 10MB)</div>
+                    </div>
+                    <div class="file-preview" id="resourcesPreview">
+                        <i class="fas fa-book-open" style="color: #2e7d32; font-size: 1.5rem;"></i>
+                        <div class="file-info">
+                            <div class="file-name"></div>
+                            <div class="file-size"></div>
+                        </div>
+                        <button type="button" class="remove-file" onclick="removeFile('resources')">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="progress-container" id="progressContainer">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="progress-text" id="progressText">Processing your syllabus...</div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <span class="btn-text">
+                        <i class="fas fa-magic"></i> Analyze Syllabus
+                    </span>
+                    <div class="btn-loader">
+                        <div class="spinner"></div>
+                    </div>
+                </button>
+            </form>
+        </section>
+    </main>
+
+    <!-- Floating Action Button -->
+    <button class="fab" onclick="scrollToTop()" title="Back to top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <div class="toast-message"></div>
+    </div>
+
+    <script>
+   // Global variables
+let uploadedFiles = {
+    syllabus: null,
+    resources: null
+};
+
+// DOM elements
+const syllabusUpload = document.getElementById('syllabusUpload');
+const resourcesUpload = document.getElementById('resourcesUpload');
+const syllabusFile = document.getElementById('syllabusFile');
+const resourcesFile = document.getElementById('resourcesFile');
+const submitBtn = document.getElementById('submitBtn');
+const progressContainer = document.getElementById('progressContainer');
+const progressFill = document.getElementById('progressFill');
+const progressText = document.getElementById('progressText');
+const errorMessage = document.getElementById('errorMessage');
+const errorText = document.getElementById('errorText');
+
+// Initialize event listeners
+document.addEventListener('DOMContentLoaded', function() {
+    setupFileUpload('syllabus', syllabusUpload, syllabusFile);
+    setupFileUpload('resources', resourcesUpload, resourcesFile);
+    setupFormSubmission();
+    setupCSRFToken();
+    createFloatingParticles();
+});
+
+// Setup CSRF token
+function setupCSRFToken() {
+    const csrfToken = getCsrfToken();
+    if (csrfToken) {
+        document.getElementById('csrfToken').value = csrfToken;
+    }
+}
+
+// File upload setup
+function setupFileUpload(type, uploadArea, fileInput) {
+    uploadArea.addEventListener('dragover', handleDragOver);
+    uploadArea.addEventListener('dragleave', handleDragLeave);
+    uploadArea.addEventListener('drop', (e) => handleDrop(e, type));
+    fileInput.addEventListener('change', (e) => handleFileSelect(e, type));
+}
+
+function handleDragOver(e) {
+    e.preventDefault();
+    e.currentTarget.classList.add('drag-over');
+}
+
+function handleDragLeave(e) {
+    e.preventDefault();
+    e.currentTarget.classList.remove('drag-over');
+}
+
+function handleDrop(e, type) {
+    e.preventDefault();
+    e.currentTarget.classList.remove('drag-over');
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+        const file = files[0];
+        if (validateFile(file, type)) {
+            uploadedFiles[type] = file;
+            showFilePreview(file, type);
+            showToast(`${type} file uploaded successfully!`, 'success');
+        }
+    }
+}
+
+function handleFileSelect(e, type) {
+    const file = e.target.files[0];
+    if (file && validateFile(file, type)) {
+        uploadedFiles[type] = file;
+        showFilePreview(file, type);
+        showToast(`${type} file selected successfully!`, 'success');
+    }
+}
+
+// File validation
+function validateFile(file, type) {
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    if (file.size > maxSize) {
+        showToast('File size must be less than 10MB', 'error');
+        return false;
+    }
+    if (type === 'syllabus') {
+        const validTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
+        if (!validTypes.includes(file.type)) {
+            showToast('Syllabus must be PDF, JPG, or PNG', 'error');
+            return false;
+        }
+    } else if (type === 'resources') {
+        if (file.type !== 'application/pdf') {
+            showToast('Resources must be PDF format', 'error');
+            return false;
+        }
+    }
+    return true;
+}
+
+// Show file preview
+function showFilePreview(file, type) {
+    const preview = document.getElementById(`${type}Preview`);
+    const fileName = preview.querySelector('.file-name');
+    const fileSize = preview.querySelector('.file-size');
+    fileName.textContent = file.name;
+    fileSize.textContent = formatFileSize(file.size);
+    preview.classList.add('show');
+    document.getElementById(`${type}Upload`).style.display = 'none';
+}
+
+function removeFile(type) {
+    uploadedFiles[type] = null;
+    document.getElementById(`${type}Preview`).classList.remove('show');
+    document.getElementById(`${type}Upload`).style.display = 'flex';
+    document.getElementById(`${type}File`).value = '';
+    showToast(`${type} file removed`, 'warning');
+}
+
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+// Form submission
+function setupFormSubmission() {
+    document.getElementById('syllabusForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        hideError();
+        if (!uploadedFiles.syllabus) {
+            showError('Please upload a syllabus file');
+            return;
+        }
+        await submitForm();
+    });
+}
+
+// Submit form
+async function submitForm() {
+    try {
+        submitBtn.classList.add('loading');
+        submitBtn.disabled = true;
+        progressContainer.classList.add('show');
+        updateProgress(0, 'Preparing upload...');
+        const formData = new FormData();
+        formData.append('csrfmiddlewaretoken', getCsrfToken());
+        formData.append('syllabus', uploadedFiles.syllabus);
+        if (uploadedFiles.resources) {
+            formData.append('resources', uploadedFiles.resources);
+        }
+        updateProgress(20, 'Uploading files...');
+        const response = await fetch(`/uped/submit_syllabus_and_resources/`, {
+            method: 'POST',
+            body: formData,
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        });
+        updateProgress(50, 'Processing syllabus...');
+        if (response.ok) {
+            if (response.redirected) {
+                updateProgress(100, 'Analysis complete! Redirecting...');
+                showToast('Syllabus analyzed successfully!', 'success');
+                setTimeout(() => { window.location.href = response.url; }, 1500);
+            } else {
+                const result = await response.text();
+                updateProgress(100, 'Analysis complete!');
+                showToast('Syllabus analyzed successfully!', 'success');
+                if (result.includes('<!DOCTYPE html>')) {
+                    document.open(); document.write(result); document.close();
+                } else {
+                    try {
+                        const jsonResult = JSON.parse(result);
+                        if (jsonResult.redirect_url) {
+                            window.location.href = jsonResult.redirect_url;
+                        }
+                    } catch (e) {
+                        window.location.href = `/uped/courses_on_syllabus/`;
+                    }
+                }
+            }
+        } else {
+            const errorData = await response.text();
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(errorData, 'text/html');
+            const errorElement = doc.querySelector('.error-message, .alert-error, .alert-danger');
+            let errorMsg = 'Failed to analyze syllabus. Please try again.';
+            if (errorElement) errorMsg = errorElement.textContent.trim();
+            else if (response.status === 400) errorMsg = errorData || 'Invalid request.';
+            else if (response.status === 404) errorMsg = 'Service not found.';
+            else if (response.status === 500) errorMsg = 'Server error. Please try again later.';
+            throw new Error(errorMsg);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        updateProgress(0, '');
+        showError(error.message || 'Error analyzing syllabus.');
+        showToast('Error analyzing syllabus. Please try again.', 'error');
+    } finally {
+        submitBtn.classList.remove('loading');
+        submitBtn.disabled = false;
+        setTimeout(() => {
+            progressContainer.classList.remove('show');
+            updateProgress(0, '');
+        }, 2000);
+    }
+}
+
+// Get CSRF token
+function getCsrfToken() {
+    const cookies = document.cookie.split(';');
+    for (let cookie of cookies) {
+        const [name, value] = cookie.trim().split('=');
+        if (name === 'csrftoken') return value;
+    }
+    const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+    if (csrfMeta) return csrfMeta.getAttribute('content');
+    const existingToken = document.querySelector('input[name="csrfmiddlewaretoken"]');
+    if (existingToken) return existingToken.value;
+    return '';
+}
+
+// Progress UI
+function updateProgress(percentage, text) {
+    progressFill.style.width = `${percentage}%`;
+    progressText.textContent = text;
+}
+
+function showError(message) {
+    errorText.textContent = message;
+    errorMessage.classList.add('show');
+    errorMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+function hideError() { errorMessage.classList.remove('show'); }
+
+// Toast
+function showToast(message, type = 'success') {
+    const toast = document.getElementById('toast');
+    const toastMessage = toast.querySelector('.toast-message');
+    toastMessage.textContent = message;
+    toast.className = `toast ${type}`;
+    toast.classList.add('show');
+    setTimeout(() => { toast.classList.remove('show'); }, 4000);
+}
+
+// Scroll
+function scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Particles
+function createFloatingParticles() {
+    const particleCount = 5;
+    for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        const size = Math.random() * 20 + 10;
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        particle.style.top = `${Math.random() * 100}%`;
+        particle.style.left = `${Math.random() * 100}%`;
+        particle.style.animationDelay = `${Math.random() * 6}s`;
+        particle.style.animationDuration = `${6 + Math.random() * 4}s`;
+        document.body.appendChild(particle);
+    }
+}
+
+// Header scroll effect
+window.addEventListener('scroll', function() {
+    const header = document.querySelector('.header');
+    if (window.scrollY > 100) {
+        header.style.background = 'rgba(255, 255, 255, 0.98)';
+        header.style.boxShadow = '0 2px 30px rgba(0, 0, 0, 0.15)';
+    } else {
+        header.style.background = 'rgba(255, 255, 255, 0.95)';
+        header.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
+    }
+});
+
+// Smooth scrolling
+document.querySelectorAll('.nav-links a').forEach(link => {
+    link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href').substring(1);
+        const targetElement = document.getElementById(targetId);
+        if (targetElement) targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+});
+
+// Auto-hide toast on click
+document.getElementById('toast').addEventListener('click', function() {
+    this.classList.remove('show');
+});
+
+// Keyboard shortcut: Ctrl+U to upload
+document.addEventListener('keydown', function(e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'u') {
+        e.preventDefault();
+        syllabusFile.click();
+    }
+});
+
+    </script>
+</body>
+</html>

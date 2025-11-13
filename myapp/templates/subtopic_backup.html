@@ -1,0 +1,248 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ subtopic }} | PEP Course Platform</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap CSS (v5) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { background: #f7f7f7; }
+    .sidebar { min-height: 100vh; }
+    .list-group .dropdown-toggle { background: #f8f9fa; }
+    .dropdown-item.active { background: #0d6efd; color: #fff; }
+    .notes, .project { background: #f9f9f9; }
+    
+/* Fixed sidebar */
+.sidebar {
+  position: fixed;
+  top: 56px;    /* Height of your navbar, change if different */
+  left: 0;
+  width: 250px;
+  height: calc(100vh - 56px); /* Full viewport minus navbar */
+  overflow-y: auto;
+  background: #f8f9fa;
+  border-right: 1px solid #dee2e6;
+  z-index: 1040;
+}
+.main-content {
+  margin-left: 250px;
+  padding: 2rem 2rem 2rem 2rem;
+}
+.sidebar .dropdown-menu {
+  width: 100%;
+}
+.sidebar .dropdown-item {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #333 !important;
+}
+.sidebar .dropdown-item.active,
+.sidebar .dropdown-item:active,
+.sidebar .dropdown-item:focus,
+.sidebar .dropdown-item:hover {
+  background-color: #0d6efd !important;
+  color: #fff !important;
+}
+.text-start:hover{
+color:#333
+}
+  </style>
+  
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary" style="position: sticky; top: 0; width: 100%; z-index: 1050">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/">PEP Learning Platform</a>
+      <span class="navbar-text ms-auto">Welcome, {{ request.user.username }}</span>
+    </div>
+  </nav>
+  <div class="container-fluid">
+    <div class="row mt-3">
+    <!-- Sidebar (Topics/Subtopics) -->
+    <nav class="col-md-3 col-lg-2 bg-light sidebar p-0" style="min-height:100vh; overflow-y:auto;">
+  <div class="list-group">
+    {% for t in topics %}
+      <div class="dropdown mb-2">
+        <button
+          class="btn btn-outline-secondary w-100 text-start dropdown-toggle text-truncate"
+          type="button"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+          style="max-width: 100%;"
+          title="{{ t.topic }}">
+          {{ t.topic }}
+        </button>
+        <ul class="dropdown-menu w-100">
+          {% for st in t.subtopics %}
+            <li>
+              <a class="dropdown-item text-truncate {% if st.slug == subtopic_slug %}active{% endif %}"
+                 style="max-width: 220px;"
+                 title="{{ st.name }}"
+                 href="{% url 'subtopic_page' course_slug=course_slug topic_slug=t.topic_slug subtopic_slug=st.slug %}">
+                {{ st.name }}
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endfor %}
+  </div>
+</nav>
+
+    <!-- Main page -->
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+      <h2 class="mt-3 mb-2">{{ subtopic }}</h2>
+      {% if video_link %}
+      <div class="mb-4">
+        <iframe width="640" height="360"
+                src="https://www.youtube.com/embed/{{ video_id}}"
+                frameborder="0" allowfullscreen></iframe>
+                <h5>Credit: {{author}}</h5>
+      </div>
+      {% endif %}
+      <div>
+        <h4>Notes</h4>
+        <div class="card p-3 mb-4 notes">{{ notes|safe }}</div>
+      </div>
+      {# Quiz Section #}
+<div>
+  <h4>Quiz</h4>
+  {% if quiz_status == 'Completed' %}
+    <div class="card p-3 mb-4 bg-light"><strong>Quiz Completed!</strong></div>
+    <div class="mb-2">Your Score: {{ quiz_score }}</div>
+  {% else %}
+    <div id="quiz-section" class="card p-3 mb-4 bg-light"></div>
+    <div id="quiz-score" class="mb-2"></div>
+  {% endif %}
+</div>
+      {# Project Section #}
+<div class="mb-3">
+  <h4>Project</h4>
+  <div class="card p-3 mb-3 project">{{ project|safe }}</div>
+  {% if project_status == 'Completed' %}
+    <div class="text-success"><strong>Project Submitted & Evaluated!</strong> Score: {{ project_score }}</div>
+    {% if project_feedback %}
+      <div class="alert alert-info mt-2">AI Feedback: {{ project_feedback }}</div>
+    {% endif %}
+  {% else %}
+    <form id="project-form">
+      <input type="url" id="project-repo" class="form-control mb-2" placeholder="Paste your project GitHub repo URL" required>
+      <button class="btn btn-primary" type="submit">Submit Project Repo for Scoring</button>
+    </form>
+    <div id="project-result" class="mt-2"></div>
+  {% endif %}
+</div>
+    </main>
+  </div>
+  </div>
+  <!-- Bootstrap 5 JS + Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- JS Logic For Quiz and Project -->
+<script>
+window.quizData = {{ quiz|safe }};
+let quizIndex = 0, quizScore = 0, attempted = [];
+
+function renderQuiz(index) {
+  const data = window.quizData;
+  if (!data || !data.length || !data[index]) {
+    document.getElementById('quiz-section').innerHTML = "<div>Quiz not available</div>";
+    document.getElementById('quiz-score').innerHTML = "";
+    return;
+  }
+  let q = data[index];
+  let html = `<h5>Q${index+1}. ${q.question}</h5><form id='quiz-form'>`;
+  for(let i=0; i<q.options.length; i++) {
+    html += `<div class="form-check mb-1">
+       <input class="form-check-input" type="radio" name="quiz-option" id="qopt${i}" value="${q.options[i]}">
+       <label class="form-check-label" for="qopt${i}">${q.options[i]}</label></div>`;
+  }
+  html += `<button class="btn btn-success mt-2" type="submit">Submit Answer</button></form>`;
+  document.getElementById('quiz-section').innerHTML = html;
+  document.getElementById('quiz-form').addEventListener('submit', submitQuiz);
+}
+
+function submitQuiz(e) {
+  e.preventDefault();
+  const selected = document.querySelector('input[name="quiz-option"]:checked');
+  if (!selected) return alert("Please select an option!");
+  attempted.push(selected.value);
+  if (selected.value === window.quizData[quizIndex].answer) quizScore++;
+  quizIndex++;
+  if (quizIndex < window.quizData.length) {
+    renderQuiz(quizIndex);
+  } else {
+    document.getElementById('quiz-section').innerHTML = "<strong>Quiz Completed!</strong>";
+    document.getElementById('quiz-score').innerHTML = `Your Score: ` + quizScore * 5;
+    // Send quiz score to backend! Each quiz is worth 5 points
+    fetch("{% url 'submit_quiz_score' %}", {
+      method: "POST",
+      headers: {
+        "X-CSRFToken": "{{ csrf_token }}",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        score: quizScore * 5,  // Each right answer = 5 points
+        course_name : "{{ course_name }}",
+        topic: "{{ topic }}",
+        subtopic: "{{ subtopic }}"
+      })
+    })
+    .then(resp => resp.json())
+    .then(data => {
+      // Optional: show a message or update progress
+      if (data && data.quiz_score !== undefined) {
+        document.getElementById('quiz-score').innerText += ` (Saved!)`;
+      }
+    });
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Only run the quiz logic if quiz is NOT completed
+  {% if quiz_status != "Completed" %}
+  if (window.quizData && window.quizData.length) {
+    renderQuiz(quizIndex);
+  }
+  {% endif %}
+
+  // Project: only allow submit if not completed
+  {% if project_status != "Completed" %}
+  const projectForm = document.getElementById('project-form');
+  if (projectForm) {
+    projectForm.onsubmit = function(e) {
+      e.preventDefault();
+      let repo = document.getElementById('project-repo').value;
+      fetch("{% url 'submit_project_score' %}", {
+        method: "POST",
+        headers: {
+          "X-CSRFToken": "{{ csrf_token }}",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          project_repo: repo,
+          course_name: "{{ course_name }}",
+          topic: "{{ topic }}",
+          subtopic: "{{ subtopic }}"
+        })
+      })
+      .then(resp => resp.json())
+      .then(data => {
+        document.getElementById('project-result').innerHTML =
+          data.project_score !== undefined
+            ? "Project evaluated! Score: " + data.project_score + "/10"
+            : "Project submitted for review.";
+        // Optionally, you can now disable the form:
+        projectForm.querySelector('button[type="submit"]').disabled = true;
+        projectForm.querySelector('input').disabled = true;
+      });
+    };
+  }
+  {% endif %}
+});
+</script>
+  
+</body>
+</html>

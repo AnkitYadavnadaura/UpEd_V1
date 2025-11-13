@@ -1,0 +1,1491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview | UpEd</title>
+  <link rel="icon" href='/static/img/logo.png' type="image/png">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --warning-gradient: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            --glass-bg: rgba(255, 255, 255, 0.95);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --shadow-hover: 0 15px 40px rgba(0, 0, 0, 0.15);
+            --border-radius: 20px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: flex;
+            gap: 2rem;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 320px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid var(--glass-border);
+            height: fit-content;
+            position: sticky;
+            top: 2rem;
+        }
+
+        .sidebar h2 {
+            color: #2d3748;
+            font-weight: 700;
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .history-item {
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(226, 232, 240, 0.6);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .history-item:hover {
+            background: rgba(102, 126, 234, 0.1);
+            border-color: rgba(102, 126, 234, 0.3);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .history-item .date {
+            font-size: 0.875rem;
+            color: #4a5568;
+            margin-bottom: 0.5rem;
+        }
+
+        .history-item .score {
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .main-content {
+            flex: 1;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid var(--glass-border);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        .header p {
+            color: #4a5568;
+            font-size: 1.125rem;
+        }
+
+        .robot-icon {
+            width: 3rem;
+            height: 3rem;
+            color: #667eea;
+        }
+
+        .section {
+            display: none;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .input-section {
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(226, 232, 240, 0.6);
+        }
+
+        .input-section h2 {
+            margin-bottom: 1.5rem;
+            color: #2d3748;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .upload-area {
+            border: 2px dashed #667eea;
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            transition: var(--transition);
+            margin-bottom: 1.5rem;
+            cursor: pointer;
+        }
+
+        .upload-area:hover {
+            background: rgba(102, 126, 234, 0.05);
+            border-color: #764ba2;
+        }
+
+        .upload-area.dragover {
+            background: rgba(102, 126, 234, 0.1);
+            border-color: #764ba2;
+        }
+
+        .upload-icon {
+            font-size: 2rem;
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #2d3748;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            border: 2px solid rgba(226, 232, 240, 0.8);
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: var(--transition);
+            background: rgba(255, 255, 255, 0.9);
+            font-family: inherit;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.15);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success-gradient);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #718096 0%, #4a5568 100%);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .question-section {
+            background: rgba(102, 126, 234, 0.08);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 2px solid rgba(102, 126, 234, 0.15);
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .question-number {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-weight: 600;
+        }
+
+        .timer {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .timer.warning {
+            color: #e53e3e;
+            animation: pulse 1s infinite;
+        }
+
+        .question-text {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #1a202c;
+            line-height: 1.5;
+        }
+
+        .response-section {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(226, 232, 240, 0.6);
+        }
+
+        .mic-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .mic-button {
+            width: 60px;
+            height: 60px;
+            border: none;
+            border-radius: 50%;
+            background: var(--secondary-gradient);
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mic-button:hover {
+            transform: scale(1.1);
+        }
+
+        .mic-button.active {
+            background: #e53e3e;
+            animation: pulse 1.5s infinite;
+        }
+
+        .mic-status {
+            flex: 1;
+            font-weight: 500;
+            color: #4a5568;
+        }
+
+        .transcribed-text {
+            background: #f7fafc;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            min-height: 60px;
+            border-left: 4px solid #667eea;
+            font-style: italic;
+            color: #2d3748;
+        }
+
+        .feedback-section {
+            background: linear-gradient(135deg, rgba(67, 233, 123, 0.08) 0%, rgba(56, 249, 215, 0.06) 100%);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-left: 5px solid #43e97b;
+        }
+
+        .feedback-section h3 {
+            color: #1a202c;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.25rem;
+        }
+
+        .score-display {
+            display: inline-block;
+            background: var(--success-gradient);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-weight: 600;
+            margin-left: 1rem;
+            font-size: 0.875rem;
+        }
+
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            padding: 2rem;
+            color: #4a5568;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #e2e8f0;
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .summary-section {
+            background: var(--glass-bg);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            border: 1px solid var(--glass-border);
+        }
+
+        .summary-section h2 {
+            margin-bottom: 2rem;
+            color: #2d3748;
+            font-size: 1.875rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        .final-score {
+            font-size: 3.75rem;
+            font-weight: 700;
+            background: var(--success-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1.5rem;
+        }
+
+        .summary-text {
+            color: #4a5568;
+            font-size: 1.125rem;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .error-message {
+            background: rgba(245, 101, 101, 0.1);
+            color: #e53e3e;
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid #e53e3e;
+            margin: 1rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .success-message {
+            background: rgba(72, 187, 120, 0.1);
+            color: #38a169;
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid #38a169;
+            margin: 1rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .file-info {
+            margin-top: 1rem;
+            color: #38a169;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .or-divider {
+            text-align: center;
+            margin: 2rem 0;
+            color: #718096;
+            font-weight: 500;
+            position: relative;
+        }
+
+        .or-divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: rgba(113, 128, 150, 0.3);
+            z-index: 1;
+        }
+
+        .or-divider span {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 0 1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Speech Recognition Visual Feedback */
+        .speech-wave {
+            display: inline-block;
+            width: 4px;
+            height: 20px;
+            background: #667eea;
+            margin: 0 1px;
+            animation: wave 1.2s infinite ease-in-out;
+            border-radius: 2px;
+        }
+
+        .speech-wave:nth-child(2) { animation-delay: -1.1s; }
+        .speech-wave:nth-child(3) { animation-delay: -1.0s; }
+        .speech-wave:nth-child(4) { animation-delay: -0.9s; }
+        .speech-wave:nth-child(5) { animation-delay: -0.8s; }
+
+        /* Icons using CSS */
+        .icon {
+            display: inline-block;
+            width: 1em;
+            height: 1em;
+            vertical-align: middle;
+        }
+
+        .icon-robot::before { content: '🤖'; }
+        .icon-history::before { content: '📋'; }
+        .icon-upload::before { content: '📤'; }
+        .icon-file::before { content: '📄'; }
+        .icon-keyboard::before { content: '⌨️'; }
+        .icon-play::before { content: '▶️'; }
+        .icon-mic::before { content: '🎤'; }
+        .icon-mic-off::before { content: '🔇'; }
+        .icon-clock::before { content: '⏰'; }
+        .icon-send::before { content: '📤'; }
+        .icon-arrow-right::before { content: '➡️'; }
+        .icon-comments::before { content: '💬'; }
+        .icon-trophy::before { content: '🏆'; }
+        .icon-download::before { content: '⬇️'; }
+        .icon-refresh::before { content: '🔄'; }
+        .icon-check::before { content: '✅'; }
+        .icon-warning::before { content: '⚠️'; }
+        .icon-spinner::before { content: '⏳'; }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes wave {
+            0%, 40%, 100% { transform: scaleY(0.4); }
+            20% { transform: scaleY(1.0); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                padding: 1rem;
+            }
+
+            .sidebar {
+                width: 100%;
+                position: static;
+                margin-bottom: 1rem;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .question-text {
+                font-size: 1.1rem;
+            }
+
+            .mic-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .final-score {
+                font-size: 2.5rem;
+            }
+
+            .button-group {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+  <div class="navbar-container">
+    <div class="logo">
+      
+      <a href="/uped/dashboard/"><img src="/static/img/logo.png" alt="Logo" /></a>
+      
+    </div>
+    
+  </div>
+</nav>
+
+<style>
+  /* Navbar base */
+  .navbar {
+    background: #f7fafc; /* your primary color */
+    padding: 0.7rem 1.5rem;
+    box-shadow: 0 2px 10px rgba(102, 126, 234, 0.3);
+  }
+  /* Container to align items and max width */
+  .navbar-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  /* Logo styles */
+  .logo img {
+    height: 40px;
+    max-width: 150px;
+    object-fit: contain;
+  }
+  /* If using text logo */
+  .logo-text {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: #fff;
+    user-select: none;
+  }
+
+  /* Username styles */
+  .username {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #fff;
+    background: rgba(255 255 255 / 0.25);
+    padding: 0.35rem 0.8rem;
+    border-radius: 20px;
+    user-select: none;
+    transition: background 0.3s ease;
+  }
+  .username:hover {
+    background: rgba(255 255 255 / 0.45);
+    cursor: default;
+  }
+
+  /* Responsive - smaller screens */
+  @media (max-width: 480px) {
+    .navbar {
+      padding: 0.5rem 1rem;
+    }
+    .logo img {
+      height: 32px;
+    }
+    .username {
+      font-size: 0.9rem;
+      padding: 0.3rem 0.6rem;
+    }
+  }
+</style>
+
+    <div class="container">
+        <!-- Sidebar for Interview History -->
+        <div class="sidebar">
+            <h2>
+                <span class="icon icon-history"></span>
+                Interview History
+            </h2>
+            <div id="historyContainer">
+                <p style="color: #718096; text-align: center;">Loading history...</p>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <!-- Header -->
+            <div class="header">
+                <h1>
+                    <span class="icon icon-robot robot-icon"></span>
+                    AI Interview Prep
+                </h1>
+                <p>Practice with your AI mentor and improve your interview skills</p>
+            </div>
+
+            <!-- Setup Section -->
+            <div id="setupSection" class="section active">
+                <div class="input-section">
+                    <h2>
+                        <span class="icon icon-upload"></span>
+                        Get Started
+                    </h2>
+                    
+                    <div class="form-group">
+                        <label>
+                            <span class="icon icon-file"></span>
+                            Upload Resume (PDF)
+                        </label>
+                        <div class="upload-area" id="uploadArea">
+                            <div class="upload-icon">📤</div>
+                            <p>Drag & drop your resume here or click to select</p>
+                            <input type="file" id="resumeFile" accept=".pdf" style="display: none;">
+                        </div>
+                        <div id="fileInfo" class="file-info hidden">
+                            <span class="icon icon-check"></span>
+                            <span id="fileName"></span>
+                        </div>
+                    </div>
+
+                    <div class="or-divider">
+                        <span>OR</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="skillsInput">
+                            <span class="icon icon-keyboard"></span>
+                            Enter Your Skills & Domain
+                        </label>
+                        <textarea 
+                            id="skillsInput" 
+                            class="form-control" 
+                            placeholder="E.g., Full-stack developer with 3 years experience in React, Node.js, Python. Worked on e-commerce platforms and REST APIs..."
+                            rows="5">
+                        </textarea>
+                    </div>
+
+                    <button id="startBtn" class="btn btn-primary" style="width: 100%;">
+                        <span class="icon icon-play"></span>
+                        Start AI Interview
+                    </button>
+                </div>
+            </div>
+
+            <!-- Interview Section -->
+            <div id="interviewSection" class="section">
+                <!-- Question Display -->
+                <div class="question-section">
+                    <div class="question-header">
+                        <span id="questionNumber" class="question-number">Question 1/7</span>
+                        <div id="timer" class="timer">
+                            <span class="icon icon-clock"></span>
+                            <span id="timeLeft">01:00</span>
+                        </div>
+                    </div>
+                    <div id="questionText" class="question-text">
+                        Loading your first question...
+                    </div>
+                </div>
+
+                <!-- Response Section -->
+                <div class="response-section">
+                    <div class="mic-container">
+                        <button id="micBtn" class="mic-button">
+                            <span class="icon icon-mic"></span>
+                        </button>
+                        <div class="mic-status">
+                            <div id="micStatus">Click microphone to start recording</div>
+                            <div id="speechWave" class="hidden">
+                                <span class="speech-wave"></span>
+                                <span class="speech-wave"></span>
+                                <span class="speech-wave"></span>
+                                <span class="speech-wave"></span>
+                                <span class="speech-wave"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="transcribedText" class="transcribed-text">
+                        Your speech will appear here...
+                    </div>
+
+                    <div class="form-group">
+                        <label for="textResponse">Or type your response:</label>
+                        <textarea 
+                            id="textResponse" 
+                            class="form-control" 
+                            placeholder="Type your answer here..."
+                            rows="4">
+                        </textarea>
+                    </div>
+
+                    <div class="button-group">
+                        <button id="submitBtn" class="btn btn-success">
+                            <span class="icon icon-send"></span>
+                            Submit Answer
+                        </button>
+                        <button id="nextBtn" class="btn btn-secondary hidden">
+                            <span class="icon icon-arrow-right"></span>
+                            Next Question
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Feedback Section -->
+                <div id="feedbackSection" class="feedback-section hidden">
+                    <h3>
+                        <span class="icon icon-comments"></span>
+                        AI Feedback
+                        <span id="scoreDisplay" class="score-display hidden">8.5/10</span>
+                    </h3>
+                    <div id="feedbackText">
+                        Your feedback will appear here...
+                    </div>
+                </div>
+
+                <!-- Loading Section -->
+                <div id="loadingSection" class="loading hidden">
+                    <div class="spinner"></div>
+                    <span>AI is evaluating your response...</span>
+                </div>
+            </div>
+
+            <!-- Summary Section -->
+            <div id="summarySection" class="section">
+                <div class="summary-section">
+                    <h2>
+                        <span class="icon icon-trophy"></span>
+                        Interview Complete!
+                    </h2>
+                    
+                    <div id="finalScore" class="final-score">8.5/10</div>
+                    
+                    <div id="summaryText" class="summary-text">
+                        Great job! Your performance shows strong potential...
+                    </div>
+
+                    <div class="button-group">
+                        <button id="downloadBtn" class="btn btn-success">
+                            <span class="icon icon-download"></span>
+                            Download Results
+                        </button>
+                        <button id="newInterviewBtn" class="btn btn-primary">
+                            <span class="icon icon-refresh"></span>
+                            New Interview
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let currentSessionId = null;
+        let currentQuestionNumber = 1;
+        let totalQuestions = 7;
+        let recognition = null;
+        let isListening = false;
+        let silenceTimer = null;
+        let questionTimer = null;
+        let timeLeft = 180;
+        let isRecognitionSupported = false;
+        let speechSynthesis = window.speechSynthesis;
+        let finalTranscript = '';
+
+
+        // Initialize application
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeSpeechRecognition();
+            initializeEventListeners();
+            loadInterviewHistory();
+        });
+
+        // Utility functions
+        function getCsrfToken() {
+            const cookies = document.cookie.split(';');
+            for (let cookie of cookies) {
+                const [name, value] = cookie.trim().split('=');
+                if (name === 'csrftoken') {
+                    return value;
+                }
+            }
+            return '';
+        }
+
+        function showError(message) {
+            // Remove existing error messages
+            const existingErrors = document.querySelectorAll('.error-message');
+            existingErrors.forEach(error => error.remove());
+            
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.innerHTML = `<span class="icon icon-warning"></span> ${message}`;
+            
+            const activeSection = document.querySelector('.section.active');
+            activeSection.insertBefore(errorDiv, activeSection.firstChild);
+            
+            setTimeout(() => {
+                if (errorDiv.parentNode) {
+                    errorDiv.remove();
+                }
+            }, 5000);
+        }
+
+        function showSuccess(message) {
+            // Remove existing success messages
+            const existingSuccess = document.querySelectorAll('.success-message');
+            existingSuccess.forEach(success => success.remove());
+            
+            const successDiv = document.createElement('div');
+            successDiv.className = 'success-message';
+            successDiv.innerHTML = `<span class="icon icon-check"></span> ${message}`;
+            
+            const activeSection = document.querySelector('.section.active');
+            activeSection.insertBefore(successDiv, activeSection.firstChild);
+            
+            setTimeout(() => {
+                if (successDiv.parentNode) {
+                    successDiv.remove();
+                }
+            }, 5000);
+        }
+
+        function switchToSection(sectionId) {
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+        }
+
+        function initializeSpeechRecognition() {
+            // Check for speech recognition support
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                recognition = new SpeechRecognition();
+                
+                recognition.continuous = true;
+                recognition.interimResults = true;
+                recognition.lang = 'en-US';
+                
+                recognition.onstart = function() {
+                    isListening = true;
+                    document.getElementById('micBtn').classList.add('active');
+                    document.getElementById('micBtn').innerHTML = '<span class="icon icon-mic-off"></span>';
+                    document.getElementById('micStatus').textContent = 'Listening...';
+                    document.getElementById('speechWave').classList.remove('hidden');
+                };
+                
+                recognition.onresult = function(event) {
+    clearTimeout(silenceTimer);
+
+    let interimTranscript = '';
+    for (let i = event.resultIndex; i < event.results.length; ++i) {
+        let transcript = event.results[i][0].transcript;
+        if (event.results[i].isFinal) {
+            finalTranscript += transcript + ' ';  // Append finalized transcript
+        } else {
+            interimTranscript += transcript;     // Current interim result
+        }
+    }
+
+    // Display accumulated final transcript + current interim text
+    const combinedTranscript = finalTranscript + interimTranscript;
+    document.getElementById('transcribedText').textContent = combinedTranscript;
+    document.getElementById('textResponse').value = combinedTranscript;
+    
+    // Reset the silence timer (as you already do)
+    silenceTimer = setTimeout(() => {
+        if (isListening) {
+            stopListening();
+        }
+    }, 5000);  // or your configured duration
+};
+
+                    
+                    
+                    
+                    // Set silence timer for continuous listening
+                    silenceTimer = setTimeout(() => {
+                        if (isListening) {
+                            stopListening();
+                        }
+                    }, 3000); // 3 seconds of silence
+                };
+                
+                recognition.onerror = function(event) {
+                    console.error('Speech recognition error:', event.error);
+                    stopListening();
+                    showError('Speech recognition error: ' + event.error);
+                };
+                
+                recognition.onend = function() {
+                    if (isListening) {
+                        // Restart recognition if we're still supposed to be listening
+                        setTimeout(() => {
+                            if (isListening) {
+                                try {
+                                    recognition.start();
+                                } catch (error) {
+                                    console.error('Error restarting recognition:', error);
+                                    stopListening();
+                                }
+                            }
+                        }, 100);
+                    }
+                };
+                
+                isRecognitionSupported = true;
+            } 
+
+        function initializeEventListeners() {
+            // File upload listeners
+            const uploadArea = document.getElementById('uploadArea');
+            const fileInput = document.getElementById('resumeFile');
+            
+            uploadArea.addEventListener('click', () => fileInput.click());
+            uploadArea.addEventListener('dragover', handleDragOver);
+            uploadArea.addEventListener('dragleave', handleDragLeave);
+            uploadArea.addEventListener('drop', handleFileDrop);
+            fileInput.addEventListener('change', handleFileSelect);
+            
+            // Button listeners
+            document.getElementById('startBtn').addEventListener('click', startInterview);
+            document.getElementById('micBtn').addEventListener('click', toggleMicrophone);
+            document.getElementById('submitBtn').addEventListener('click', () => submitAnswer(false));
+            document.getElementById('nextBtn').addEventListener('click', nextQuestion);
+            document.getElementById('downloadBtn').addEventListener('click', downloadResults);
+            document.getElementById('newInterviewBtn').addEventListener('click', startNewInterview);
+            
+            // Skills input listener to clear file when typing
+            document.getElementById('skillsInput').addEventListener('input', function() {
+                if (this.value.trim()) {
+                    document.getElementById('resumeFile').value = '';
+                    document.getElementById('fileInfo').classList.add('hidden');
+                }
+            });
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.currentTarget.classList.add('dragover');
+        }
+
+        function handleDragLeave(e) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('dragover');
+        }
+
+        function handleFileDrop(e) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('dragover');
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0 && files[0].type === 'application/pdf') {
+                const fileInput = document.getElementById('resumeFile');
+                fileInput.files = files;
+                handleFileSelect({ target: { files: files } });
+            } else {
+                showError('Please select a valid PDF file.');
+            }
+        }
+
+        function handleFileSelect(e) {
+            const file = e.target.files[0];
+            if (file && file.type === 'application/pdf') {
+                document.getElementById('fileInfo').classList.remove('hidden');
+                document.getElementById('fileName').textContent = file.name;
+                document.getElementById('skillsInput').value = '';
+            } else if (file) {
+                showError('Please select a valid PDF file.');
+                e.target.value = '';
+            }
+        }
+
+        async function startInterview() {
+            const fileInput = document.getElementById('resumeFile');
+            const skillsInput = document.getElementById('skillsInput');
+            
+            if (!fileInput.files.length && !skillsInput.value.trim()) {
+                showError('Please provide either a resume PDF or enter your skills and domain.');
+                return;
+            }
+            
+            const startBtn = document.getElementById('startBtn');
+            startBtn.innerHTML = '<span class="icon icon-spinner"></span> Starting Interview...';
+            startBtn.disabled = true;
+            
+            try {
+                const formData = new FormData();
+                
+                if (fileInput.files.length > 0) {
+                    formData.append('resume_pdf', fileInput.files[0]);
+                } else {
+                    formData.append('domain_skills', skillsInput.value.trim());
+                }
+
+                const response = await fetch('/uped/start_interview/', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCsrfToken(),
+                    },
+                    body: formData,
+                    credentials: 'same-origin',
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (data.session_id && data.question) {
+                    currentSessionId = data.session_id;
+                    currentQuestionNumber = data.question_number || 1;
+                    totalQuestions = data.total_questions || 7;
+                    
+                    showQuestion(data.question);
+                    switchToSection('interviewSection');
+                } else {
+                    showError('Failed to start interview. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error starting interview:', error);
+                showError('Failed to start interview: ' + (error.message || 'Unknown error'));
+            } finally {
+                startBtn.innerHTML = '<span class="icon icon-play"></span> Start AI Interview';
+                startBtn.disabled = false;
+            }
+        }
+
+        function showQuestion(questionText) {
+            document.getElementById('questionText').textContent = questionText;
+            document.getElementById('questionNumber').textContent = `Question ${currentQuestionNumber}/${totalQuestions}`;
+            
+            // Text-to-speech for the question
+            if (speechSynthesis && speechSynthesis.getVoices().length > 0) {
+                const utterance = new SpeechSynthesisUtterance(questionText);
+                utterance.rate = 0.8;
+                utterance.pitch = 1;
+                speechSynthesis.speak(utterance);
+            }
+            
+            // Reset transcripts for new question
+    finalTranscript = '';
+    document.getElementById('transcribedText').textContent = 'Your speech will appear here...';
+    document.getElementById('textResponse').value = '';
+
+    document.getElementById('feedbackSection').classList.add('hidden');
+    document.getElementById('nextBtn').classList.add('hidden');
+
+            // Start timer
+            startTimer();
+        }
+
+        function startTimer() {
+            timeLeft = 180;
+            updateTimerDisplay();
+            
+            questionTimer = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                
+                if (timeLeft <= 10) {
+                    document.getElementById('timer').classList.add('warning');
+                }
+                
+                if (timeLeft <= 0) {
+                    clearInterval(questionTimer);
+                    handleTimeout();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            document.getElementById('timeLeft').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function stopTimer() {
+            clearInterval(questionTimer);
+            document.getElementById('timer').classList.remove('warning');
+        }
+
+        function handleTimeout() {
+            stopListening();
+            submitAnswer(true);
+        }
+
+        function toggleMicrophone() {
+            if (!isRecognitionSupported) {
+                showError('Speech recognition is not supported in this browser.');
+                return;
+            }
+            
+            if (isListening) {
+                stopListening();
+            } else {
+                startListening();
+            }
+        }
+
+        function startListening() {
+            if (!recognition) return;
+            
+            try {
+                recognition.start();
+            } catch (error) {
+                console.error('Error starting recognition:', error);
+                showError('Failed to start speech recognition.');
+            }
+        }
+
+        function stopListening() {
+            isListening = false;
+            clearTimeout(silenceTimer);
+            
+            if (recognition) {
+                recognition.stop();
+            }
+            
+            document.getElementById('micBtn').classList.remove('active');
+            document.getElementById('micBtn').innerHTML = '<span class="icon icon-mic"></span>';
+            document.getElementById('micStatus').textContent = 'Click microphone to start recording';
+            document.getElementById('speechWave').classList.add('hidden');
+        }
+
+        async function submitAnswer(isTimeout = false) {
+            const transcribedText = document.getElementById('transcribedText').textContent;
+            const typedText = document.getElementById('textResponse').value.trim();
+            const userResponse = typedText || (transcribedText !== 'Your speech will appear here...' ? transcribedText : '');
+            
+            if (!userResponse && !isTimeout) {
+                showError('Please provide an answer before submitting.');
+                return;
+            }
+            
+            stopTimer();
+            stopListening();
+            
+            document.getElementById('loadingSection').classList.remove('hidden');
+            document.getElementById('submitBtn').disabled = true;
+            
+            try {
+                const response = await fetch('/uped/submit_answer/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCsrfToken(),
+                    },
+                    body: JSON.stringify({
+                        session_id: currentSessionId,
+                        user_response: userResponse,
+                        is_timeout: isTimeout,
+                    }),
+                    credentials: 'same-origin',
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                // Show feedback
+                if (data.feedback) {
+                    showFeedback({
+                        feedback: data.feedback,
+                        score: data.score
+                    });
+                }
+
+                // Handle clarification
+                if (data.needs_clarification && data.clarification_prompt) {
+                    showQuestion(data.clarification_prompt);
+                    document.getElementById('loadingSection').classList.add('hidden');
+                    document.getElementById('submitBtn').disabled = false;
+                    return;
+                }
+
+                // Check if interview is complete
+                if (data.is_interview_complete) {
+                    showInterviewSummary(data.total_score, data.session_summary);
+                } else if (data.next_question) {
+                    // Prepare for next question
+                    currentQuestionNumber = data.question_number || currentQuestionNumber + 1;
+                    prepareNextQuestion(data.next_question);
+                }
+            } catch (error) {
+                console.error('Error submitting answer:', error);
+                showError('Failed to submit answer: ' + (error.message || 'Unknown error'));
+            } finally {
+                document.getElementById('loadingSection').classList.add('hidden');
+                document.getElementById('submitBtn').disabled = false;
+            }
+        }
+
+        function showFeedback(data) {
+            const feedbackSection = document.getElementById('feedbackSection');
+            const feedbackText = document.getElementById('feedbackText');
+            const scoreDisplay = document.getElementById('scoreDisplay');
+            
+            feedbackText.textContent = data.feedback;
+            if (data.score !== null && data.score !== undefined) {
+                scoreDisplay.textContent = `${data.score}/10`;
+                scoreDisplay.classList.remove('hidden');
+            }
+            feedbackSection.classList.remove('hidden');
+        }
+
+        function prepareNextQuestion(nextQuestionText) {
+            document.getElementById('nextBtn').classList.remove('hidden');
+            // Store the next question for when user clicks next
+            document.getElementById('nextBtn').dataset.nextQuestion = nextQuestionText;
+        }
+
+        function nextQuestion() {
+            const nextQuestionText = document.getElementById('nextBtn').dataset.nextQuestion;
+            if (nextQuestionText) {
+                showQuestion(nextQuestionText);
+                document.getElementById('nextBtn').classList.add('hidden');
+            }
+        }
+
+        function showInterviewSummary(totalScore, summaryText) {
+            document.getElementById('finalScore').textContent = `${totalScore || 'N/A'}/10`;
+            document.getElementById('summaryText').textContent = summaryText || 'Interview completed successfully!';
+            
+            switchToSection('summarySection');
+            loadInterviewHistory();
+        }
+
+        async function downloadResults() {
+            if (!currentSessionId) {
+                showError('No interview session found.');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/uped/download_results/${currentSessionId}/`, {
+                    method: 'GET',
+                    headers: {
+                        'X-CSRFToken': getCsrfToken(),
+                    },
+                    credentials: 'same-origin',
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `interview_results_${currentSessionId}.txt`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            } catch (error) {
+                console.error('Error downloading results:', error);
+                showError('Failed to download results: ' + (error.message || 'Unknown error'));
+            }
+        }
+
+        async function downloadPreviousSession(sessionId) {
+            try {
+                const response = await fetch(`/uped/download_results/${sessionId}/`, {
+                    method: 'GET',
+                    headers: {
+                        'X-CSRFToken': getCsrfToken(),
+                    },
+                    credentials: 'same-origin',
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `interview_results_${sessionId}.txt`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            } catch (error) {
+                console.error('Error downloading previous session:', error);
+                showError('Failed to download session: ' + (error.message || 'Unknown error'));
+            }
+        }
+
+        function startNewInterview() {
+            currentSessionId = null;
+            currentQuestionNumber = 1;
+            
+            // Reset form
+            document.getElementById('resumeFile').value = '';
+            document.getElementById('skillsInput').value = '';
+            document.getElementById('fileInfo').classList.add('hidden');
+            
+            switchToSection('setupSection');
+        }
+
+        async function loadInterviewHistory() {
+            try {
+                const response = await fetch('/uped/interview_history/', {
+                    method: 'GET',
+                    headers: {
+                        'X-CSRFToken': getCsrfToken(),
+                    },
+                    credentials: 'same-origin',
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    displayInterviewHistory(data.history || []);
+                } else {
+                    document.getElementById('historyContainer').innerHTML = 
+                        '<p style="color: #718096; text-align: center;">Could not load history</p>';
+                }
+            } catch (error) {
+                console.warn('Could not load interview history:', error);
+                document.getElementById('historyContainer').innerHTML = 
+                    '<p style="color: #718096; text-align: center;">No previous interviews</p>';
+            }
+        }
+
+        function displayInterviewHistory(history) {
+            const historyContainer = document.getElementById('historyContainer');
+            
+            if (history && history.length > 0) {
+                historyContainer.innerHTML = history.map(session => `
+                    <div class="history-item" onclick="downloadPreviousSession('${session.session_id}')">
+                        <div class="date">${session.timestamp}</div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span>${session.input_type}</span>
+                            ${session.is_completed ? 
+                                `<span class="score">${session.total_score ? session.total_score.toFixed(1) : 'N/A'}/10</span>` :
+                                '<span style="color: #e53e3e;">Incomplete</span>'
+                            }
+                        </div>
+                        <div style="font-size: 0.875rem; color: #718096; margin-top: 0.25rem;">
+                            ${session.questions_answered}/7 questions
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                historyContainer.innerHTML = '<p style="color: #718096; text-align: center;">No previous interviews</p>';
+            }
+        }
+    </script>
+</body>
+</html>

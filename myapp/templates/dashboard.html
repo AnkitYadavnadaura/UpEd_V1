@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Student Dashboard — Light Mode</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --bg: #f9fafb;
+      --card: #ffffff;
+      --muted: #6b7280;
+      --accent: #2563eb;
+      --glass: rgba(0, 0, 0, 0.03);
+    }
+    * {
+      box-sizing: border-box;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+    }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: #111827;
+      min-height: 100vh;
+      display: flex;
+    }
+    .app {
+      display: flex;
+      gap: 20px;
+      padding: 20px;
+      flex: 1;
+    }
+    .sidebar {
+      width: 260px;
+      background: var(--card);
+      border-radius: 12px;
+      padding: 18px;
+      flex-shrink: 0;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    }
+    .logo {
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      color: var(--accent);
+      font-size: 18px;
+      margin-bottom: 14px;
+    }
+    .profile {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #93c5fd, #3b82f6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: white;
+    }
+    .pmeta small { display: block; color: var(--muted); font-size: 12px; }
+    nav { margin-top: 18px; }
+    nav button {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      background: transparent;
+      border: none;
+      color: #374151;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 6px;
+      cursor: pointer;
+      text-align: left;
+    }
+    nav button.active {
+      background: rgba(37, 99, 235, 0.12);
+      font-weight: 600;
+      color: var(--accent);
+    }
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .card {
+      background: var(--card);
+      padding: 18px;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+    .wide { grid-column: 1/-1; }
+    h2 { margin: 0 0 8px 0; font-size: 16px; }
+    p.muted { color: var(--muted); margin: 0; font-size: 13px; }
+    .recent { display: flex; flex-direction: column; gap: 10px; }
+    .activity { display: flex; justify-content: space-between; align-items: center; }
+    .courses-row { display: flex; gap: 12px; flex-wrap: wrap; }
+    .course-card { background: var(--glass); padding: 12px; border-radius: 10px; flex: 1; min-width: 160px; }
+    .progress { height: 8px; background: rgba(0,0,0,0.08); border-radius: 999px; overflow: hidden; margin-top: 8px; }
+    .progress > span { display: block; height: 100%; border-radius: 999px; }
+    .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .actions button { padding: 10px 12px; border-radius: 10px; border: none; background: linear-gradient(90deg, var(--accent), #3b82f6); color: white; font-weight: 600; cursor: pointer; }
+    .course-list { display: flex; flex-direction: column; gap: 10px; }
+    .course-row { display: flex; justify-content: space-between; gap: 12px; align-items: center; padding: 10px; background: var(--glass); border-radius: 10px; }
+    .small { font-size: 13px; color: var(--muted); }
+    .analytics-grid { display: grid; grid-template-columns: 1fr 380px; gap: 18px; }
+    .assign-list { display: flex; flex-direction: column; gap: 8px; }
+    .assign-item { display: flex; justify-content: space-between; gap: 12px; padding: 10px; border-radius: 8px; background: var(--glass); }
+    .interview-list { display: flex; flex-direction: column; gap: 10px; }
+    .topic { padding: 10px; border-radius: 8px; background: var(--glass); }
+    .playground { display: flex; flex-direction: column; gap: 8px; }
+    textarea { width: 100%; min-height: 120px; background: #f3f4f6; border: 1px solid #e5e7eb; padding: 10px; border-radius: 8px; color: #111827; }
+    .row { display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn { padding: 8px 12px; border-radius: 8px; border: none; background: var(--accent); color: white; cursor: pointer; }
+    footer { color: var(--muted); font-size: 13px; text-align: center; margin-top: 8px; }
+    @media(max-width: 980px) {
+      .app { flex-direction: column; padding: 12px; }
+      .sidebar { width: 100%; }
+      .analytics-grid { grid-template-columns: 1fr; }
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app"><aside class="sidebar card">
+      <div class="logo">StudentDash</div>
+      <div class="profile">
+        <div class="avatar">AY</div>
+        <div class="pmeta">
+          <div style="font-weight:700">Ankit Yadav</div>
+          <small class="small">3rd year — ECE • Rajasthan Technical Univ.</small>
+        </div>
+      </div>
+      <nav id="nav">
+        <button class="active" data-section="home">Home</button>
+        <button data-section="mycourses">My Courses</button>
+        <button data-section="analytics">Analytics</button>
+        <button data-section="assignments">Assignments</button>
+        <button data-section="interview">Interview Prep</button>
+        <button data-section="practice">Practice</button>
+        <button data-section="profile">Profile</button>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <!-- HOME -->
+      <section id="home" class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <h2>Welcome back, Ankit 👋</h2>
+            <p class="muted">Here's your student overview and quick actions.</p>
+          </div>
+          <div class="actions">
+            <button class="btn" onclick="showSection('assignments')">View Assignments</button>
+            <button class="btn" onclick="showSection('interview')">Interview Prep</button>
+            <button class="btn" onclick="showSection('practice')">Practice Coding</button>
+          </div>
+        </div>
+
+        <div style="margin-top:14px" class="grid">
+          <div class="card">
+            <h2>Recent Activity</h2>
+            <div class="recent" id="recentActivity"></div>
+          </div>
+
+          <div class="card">
+            <h2>3 Most Recent Enrolled Courses</h2>
+            <div class="courses-row" id="recentCourses"></div>
+          </div>
+
+          <div class="card wide">
+            <h2>Create New Course</h2>
+            <p class="small">Add a custom course that appears in My Courses.</p>
+            <div style="margin-top:10px;display:flex;gap:12px;flex-wrap:wrap">
+              <input id="courseTopic" placeholder="Course topic (e.g. Data Structures)" style="flex:2;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:#071126;color:#e6eef8" />
+              <input id="courseDuration" placeholder="Duration (e.g. 8 weeks)" style="flex:1;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:#071126;color:#e6eef8" />
+              <input id="courseBind" placeholder="Prerequisite topic" style="flex:1;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:#071126;color:#e6eef8" />
+              <input id="courseRef" placeholder="Reference URL (optional)" style="flex:1;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:#071126;color:#e6eef8" />
+              <button class="btn" onclick="addCourse()">Create Course</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Performance Overview</h2>
+            <p class="small">Quick glance at your recent performance</p>
+            <div style="display:flex;gap:12px;margin-top:10px;align-items:center">
+              <div style="flex:1">
+                <div style="font-weight:700;font-size:24px">78% <span class="small">avg</span></div>
+                <p class="small">Average score across active courses</p>
+              </div>
+              <div style="width:180px">
+                <canvas id="perfChart" height="120"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Quick Actions</h2>
+            <p class="small">Shortcuts to common tasks</p>
+            <div style="margin-top:10px" class="actions">
+              <button onclick="alert('Open grades')">View Grades</button>
+              <button onclick="alert('Open assignments')">Assignments & Submissions</button>
+              <button onclick="alert('Open library')">Library</button>
+              <button onclick="alert('Chat with instructor')">Chat Instructor</button>
+              <button onclick="alert('Certificates')">Certificates</button>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- MY COURSES -->
+      <section id="mycourses" class="card" style="display:none">
+        <h2>My Courses</h2>
+        <p class="small">All your enrolled courses and progress</p>
+        <div style="margin-top:12px" class="course-list" id="courseList"></div>
+      </section>
+
+      <!-- ANALYTICS -->
+      <section id="analytics" class="card" style="display:none">
+        <h2>Analytics</h2>
+        <p class="small">Comprehensive analytics about your learning</p>
+        <div style="margin-top:12px" class="analytics-grid">
+          <div style="background:transparent;padding:6px;border-radius:8px">
+            <canvas id="chartMain" height="220"></canvas>
+          </div>
+          <div class="card" style="height:100%">
+            <h3 style="margin-top:6px">Course distribution</h3>
+            <canvas id="doughnut" height="220"></canvas>
+            <div style="margin-top:10px" class="small">Shows how your time is split across categories</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ASSIGNMENTS -->
+      <section id="assignments" class="card" style="display:none">
+        <h2>Assignments</h2>
+        <p class="small">List of assignments with deadlines</p>
+        <div style="margin-top:12px" class="assign-list" id="assignList"></div>
+      </section>
+
+      <!-- INTERVIEW PREP -->
+      <section id="interview" class="card" style="display:none">
+        <h2>Interview Preparation</h2>
+        <p class="small">Curated list: problems, tips, and mock interview slots</p>
+        <div style="margin-top:12px" class="interview-list">
+          <div class="topic">
+            <strong>Data Structures & Algorithms</strong>
+            <div class="small">Important topics: Arrays, Trees, Graphs, DP.</div>
+            <div style="margin-top:8px"><button class="btn" onclick="alert('Start a mock on Arrays')">Start Mock</button></div>
+          </div>
+          <div class="topic">
+            <strong>System Design Basics</strong>
+            <div class="small">Learn scalable design patterns and basics of CAP, caching.</div>
+          </div>
+          <div class="topic">
+            <strong>Behavioral Questions</strong>
+            <div class="small">STAR method templates and sample answers.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PRACTICE -->
+      <section id="practice" class="card" style="display:none">
+        <h2>Practice — Coding Playground</h2>
+        <p class="small">Write HTML/CSS/JS and preview the result in the sandbox below.</p>
+        <div class="playground">
+          <textarea id="codeInput"><!doctype html>
+<html><head><meta charset="utf-8"><title>Run</title></head><body>
+<h1>Hello from the playground</h1>
+<script>console.log('Hello')</script>
+</body></html></textarea>
+          <div class="row">
+            <button class="btn" onclick="runPreview()">Run</button>
+            <button class="btn" onclick="resetCode()">Reset</button>
+            <div style="flex:1" class="small">Preview is sandboxed — great for quick experiments.</div>
+          </div>
+          <iframe id="preview" style="width:100%;height:320px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:#fff;margin-top:8px" sandbox="allow-scripts allow-forms"></iframe>
+        </div>
+      </section>
+
+      <!-- PROFILE -->
+      <section id="profile" class="card" style="display:none">
+        <h2>Profile & Sections</h2>
+        <p class="small">Edit your profile and view sections like education, skills, certificates.</p>
+        <div style="display:flex;gap:12px;margin-top:10px;flex-wrap:wrap">
+          <div style="flex:1;min-width:240px">
+            <label class="small">Full name</label>
+            <input id="pfName" style="width:100%;padding:10px;border-radius:8px;background:#071126;color:#e6eef8;border:1px solid rgba(255,255,255,0.03)" value="Ankit Yadav" />
+          </div>
+          <div style="flex:1;min-width:240px">
+            <label class="small">Institute</label>
+            <input id="pfInst" style="width:100%;padding:10px;border-radius:8px;background:#071126;color:#e6eef8;border:1px solid rgba(255,255,255,0.03)" value="Rajasthan Technical University" />
+          </div>
+        </div>
+        <div style="margin-top:12px">
+          <label class="small">Bio</label>
+          <textarea id="pfBio" style="min-height:80px">3rd year student, learning programming & AI/ML.</textarea>
+          <div style="margin-top:8px"><button class="btn" onclick="saveProfile()">Save Profile</button></div>
+        </div>
+      </section>
+
+      <footer>StudentDash • built for learning — customize as you like</footer>
+    </main>
+ 
+  </div>
+  
+  <script>
+    // -- Sample data
+    const state = {
+      recent: [
+        'Completed module: Intro to Graphs',
+        'Scored 82% in Algorithms Quiz',
+        'Submitted Assignment 3 for DS'
+      ],
+      courses: [
+        {id:1,title:'Data Structures',progress:72, duration:'8 weeks',bind:'C fundamentals'},
+        {id:2,title:'Web Development',progress:46, duration:'6 weeks',bind:'HTML/CSS'},
+        {id:3,title:'Machine Learning',progress:31, duration:'10 weeks',bind:'Probability'}
+      ],
+      assignments: [
+        {title:'Linked List Implementation',due:'2025-09-20',status:'pending'},
+        {title:'Responsive Portfolio',due:'2025-09-25',status:'review'},
+        {title:'ML Project - Dataset EDA',due:'2025-09-28',status:'pending'}
+      ],
+      perfSeries: [65,72,78,82,76,78]
+    }
+
+    // -- Render functions
+    function renderRecent(){
+      const target = document.getElementById('recentActivity'); target.innerHTML='';
+      state.recent.forEach((r,i)=>{
+        const el = document.createElement('div'); el.className='activity';
+        el.innerHTML = `<div><strong>${r}</strong><div class='small'>${new Date().toLocaleString()}</div></div>`;
+        target.appendChild(el);
+      })
+    }
+    function renderRecentCourses(){
+      const el=document.getElementById('recentCourses');el.innerHTML='';
+      state.courses.slice(0,3).forEach(c=>{
+        const card=document.createElement('div');card.className='course-card';
+        card.innerHTML = `<div style="font-weight:700">${c.title}</div><div class='small'>${c.duration} • ${c.bind}</div><div class='progress'><span style='width:${c.progress}%;background:linear-gradient(90deg,var(--accent),#06b6d4)'></span></div><div class='small' style='margin-top:6px'>${c.progress}% complete</div>`;
+        el.appendChild(card);
+      })
+    }
+    function renderCourseList(){
+      const el=document.getElementById('courseList');el.innerHTML='';
+      state.courses.forEach(c=>{
+        const row=document.createElement('div');row.className='course-row';
+        row.innerHTML = `<div><div style='font-weight:700'>${c.title}</div><div class='small'>${c.duration} • ${c.bind}</div></div><div style='width:40%'>
+          <div class='progress'><span style='width:${c.progress}%;background:linear-gradient(90deg,#60a5fa,#7c3aed)'></span></div>
+          <div class='small' style='margin-top:6px'>${c.progress}% complete — ${100-c.progress}% remaining</div>
+        </div>`;
+        el.appendChild(row);
+      })
+    }
+    function renderAssignments(){
+      const el=document.getElementById('assignList');el.innerHTML='';
+      state.assignments.forEach(a=>{
+        const item=document.createElement('div');item.className='assign-item';
+        item.innerHTML = `<div><strong>${a.title}</strong><div class='small'>Due: ${a.due}</div></div><div><div class='small'>${a.status}</div><button class='btn' onclick="alert('Open ${a.title}')">Open</button></div>`;
+        el.appendChild(item);
+      })
+    }
+
+    // -- Charts
+    function buildCharts(){
+      const ctx1 = document.getElementById('perfChart').getContext('2d');
+      new Chart(ctx1, {type:'line',data:{labels:state.perfSeries.map((_,i)=>i+1),datasets:[{label:'Score',data:state.perfSeries,fill:true,tension:0.4}]},options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,max:100}}}});
+
+      const ctx2 = document.getElementById('chartMain').getContext('2d');
+      new Chart(ctx2, {type:'bar',data:{labels:state.courses.map(c=>c.title),datasets:[{label:'Progress',data:state.courses.map(c=>c.progress),barThickness:22}]},options:{scales:{y:{beginAtZero:true,max:100}}}});
+
+      const ctx3 = document.getElementById('doughnut').getContext('2d');
+      new Chart(ctx3,{type:'doughnut',data:{labels:state.courses.map(c=>c.title),datasets:[{data:state.courses.map(c=>Math.max(5,c.progress)),cutout:'65%'}]}});
+    }
+
+    // -- Actions
+    function showSection(id){
+      document.querySelectorAll('main > section').forEach(s=>s.style.display='none');
+      const el=document.getElementById(id); if(el) el.style.display='block';
+      document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active', b.dataset.section===id));
+      // build charts when analytics is requested
+      if(id==='analytics') setTimeout(buildCharts,60);
+    }
+
+    document.getElementById('nav').addEventListener('click', (e)=>{
+      if(e.target.matches('button')) showSection(e.target.dataset.section);
+    });
+
+    function addCourse(){
+      const topic = document.getElementById('courseTopic').value.trim();
+      const duration = document.getElementById('courseDuration').value.trim();
+      const bind = document.getElementById('courseBind').value.trim();
+      const ref = document.getElementById('courseRef').value.trim();
+      if(!topic || !duration){ alert('Please add topic and duration'); return; }
+      const newc = {id: Date.now(), title: topic, progress:0, duration:duration, bind: bind || 'None', ref};
+      state.courses.unshift(newc);
+      state.recent.unshift(`Created course: ${topic}`);
+      renderRecent(); renderRecentCourses(); renderCourseList();
+      alert('Course created — added to My Courses');
+      // clear
+      document.getElementById('courseTopic').value=''; document.getElementById('courseDuration').value=''; document.getElementById('courseBind').value=''; document.getElementById('courseRef').value='';
+    }
+
+    function runPreview(){
+      const code = document.getElementById('codeInput').value;
+      const iframe = document.getElementById('preview');
+      iframe.srcdoc = code;
+    }
+    function resetCode(){
+      document.getElementById('codeInput').value = '<!doctype html>\n<html><head><meta charset="utf-8"><title>Run</title></head><body>\n<h1>Hello from the playground</h1>\n</body></html>';
+      runPreview();
+    }
+
+    function saveProfile(){
+      alert('Profile saved (locally in UI).');
+    }
+
+    // initial render
+    renderRecent(); renderRecentCourses(); renderCourseList(); renderAssignments();
+    // build perf chart
+    buildCharts();
+  </script>
+</body>
+</html>

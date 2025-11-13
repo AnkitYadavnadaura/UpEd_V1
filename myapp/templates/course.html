@@ -1,0 +1,777 @@
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<title>{{ course_name }} | UpEd</title>
+  <link rel="icon" href='/static/img/logo.png' type="image/png">
+<style>
+    :root {
+        --primary-color: #667eea;
+        --primary-light: #7c8ceb;
+        --primary-dark: #5a6fe8;
+        --primary-gradient: linear-gradient(135deg, #667eea 0%, #7c8ceb 50%, #5a6fe8 100%);
+        --success-gradient: linear-gradient(135deg, #667eea 0%, #38ef7d 100%);
+        --secondary-gradient: linear-gradient(135deg, #667eea 0%, #667eea80 100%);
+        --card-shadow: 0 10px 30px rgba(102, 126, 234, 0.15);
+        --card-shadow-hover: 0 20px 40px rgba(102, 126, 234, 0.25);
+        --border-radius: 16px;
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+        background: linear-gradient(135deg, #f8faff 0%, #e8ecff 50%, #d6dcf0 100%);
+        min-height: 100vh;
+        padding-top: 0;
+    }
+
+    /* Navbar Styles */
+    .navbar {
+        background: var(--primary-gradient) !important;
+        backdrop-filter: blur(20px);
+        box-shadow: 0 2px 20px rgba(102, 126, 234, 0.15);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        z-index: 1000;
+    }
+
+    .navbar-brand {
+        font-weight: 700 !important;
+        font-size: 1.5rem !important;
+        color: white !important;
+        text-decoration: none !important;
+    }
+
+    .navbar-brand:hover {
+        color: rgba(255, 255, 255, 0.9) !important;
+        transform: scale(1.05);
+        transition: var(--transition);
+    }
+
+    .navbar-nav .nav-link {
+        color: rgba(255, 255, 255, 0.9) !important;
+        font-weight: 500 !important;
+        padding: 0.75rem 1rem !important;
+        border-radius: 8px !important;
+        margin: 0 0.25rem !important;
+        transition: var(--transition) !important;
+    }
+
+    .navbar-nav .nav-link:hover {
+        color: white !important;
+        background: rgba(255, 255, 255, 0.1) !important;
+        transform: translateY(-1px);
+    }
+
+    .navbar-nav .nav-link.active {
+        color: white !important;
+        background: rgba(255, 255, 255, 0.2) !important;
+    }
+
+    .dropdown-menu {
+        background: white !important;
+        border: none !important;
+        border-radius: 12px !important;
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.15) !important;
+        padding: 0.5rem 0 !important;
+        margin-top: 0.5rem !important;
+    }
+
+    .dropdown-item {
+        color: #4a5568 !important;
+        font-weight: 500 !important;
+        padding: 0.75rem 1.5rem !important;
+        transition: var(--transition) !important;
+    }
+
+    .dropdown-item:hover {
+        background: rgba(102, 126, 234, 0.08) !important;
+        color: var(--primary-color) !important;
+    }
+
+    .dropdown-divider {
+        margin: 0.5rem 0 !important;
+        border-color: rgba(102, 126, 234, 0.1) !important;
+    }
+
+    .navbar-toggler {
+        border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    }
+
+    .navbar-toggler:focus {
+        box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.25) !important;
+    }
+
+    /* Error Alert Styles */
+    .error-alert {
+        padding: 1rem 0;
+        animation: slideInDown 0.5s ease-out;
+    }
+
+    .alert-danger {
+        background: linear-gradient(135deg, #667eea, #5a6fe8) !important;
+        border: none !important;
+        border-radius: var(--border-radius) !important;
+        color: white !important;
+        box-shadow: var(--card-shadow) !important;
+        font-weight: 500 !important;
+    }
+
+    .alert-danger .btn-close {
+        filter: brightness(0) invert(1) !important;
+        opacity: 0.8 !important;
+    }
+
+    .alert-danger .btn-close:hover {
+        opacity: 1 !important;
+    }
+
+    .container {
+        max-width: 1200px;
+    }
+
+    .card {
+        border-radius: var(--border-radius) !important;
+        transition: var(--transition);
+        overflow: hidden;
+        position: relative;
+    }
+
+    .card.shadow-sm {
+        box-shadow: var(--card-shadow) !important;
+    }
+
+    .card:hover {
+        box-shadow: var(--card-shadow-hover) !important;
+        transform: translateY(-2px);
+    }
+
+    .card-body {
+        background: var(--primary-gradient);
+        color: white;
+        padding: 3rem 2rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .card-body::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="%23ffffff" opacity="0.15"/><circle cx="75" cy="75" r="1" fill="%23ffffff" opacity="0.15"/><circle cx="50" cy="10" r="0.5" fill="%23ffffff" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+        opacity: 0.4;
+        z-index: -1;
+    }
+
+    .card-title {
+        font-size: 2.5rem !important;
+        font-weight: 700 !important;
+        margin-bottom: 1rem !important;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .lead {
+        font-size: 1.2rem !important;
+        font-weight: 400 !important;
+        opacity: 0.9;
+        margin-bottom: 2rem !important;
+        color: white !important;
+    }
+
+    .badge {
+        font-size: 0.9rem !important;
+        font-weight: 500 !important;
+        padding: 0.75rem 1.5rem !important;
+        border-radius: 50px !important;
+        margin: 0 0.5rem 0.5rem 0 !important;
+        background: rgba(255, 255, 255, 0.25) !important;
+        backdrop-filter: blur(15px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.4) !important;
+        color: white !important;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+    }
+
+    .badge.bg-primary, .badge.bg-success {
+        background: rgba(255, 255, 255, 0.25) !important;
+        color: white !important;
+    }
+
+    .btn {
+        font-weight: 600 !important;
+        padding: 1rem 2.5rem !important;
+        border-radius: 50px !important;
+        border: none !important;
+        transition: var(--transition) !important;
+        position: relative;
+        overflow: hidden;
+        text-decoration: none;
+    }
+
+    .btn-lg {
+        font-size: 1.1rem !important;
+    }
+
+    .btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        transition: left 0.6s;
+    }
+
+    .btn:hover::before {
+        left: 100%;
+    }
+
+    .btn-primary {
+        background: rgba(255, 255, 255, 0.25) !important;
+        color: white !important;
+        backdrop-filter: blur(15px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.4) !important;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-primary:hover {
+        background: rgba(255, 255, 255, 0.35) !important;
+        transform: translateY(-3px) !important;
+        box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4) !important;
+        color: white !important;
+    }
+
+    .btn-success {
+        background: var(--success-gradient) !important;
+        color: white !important;
+        border: none !important;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-success:hover {
+        transform: translateY(-3px) !important;
+        box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4) !important;
+        color: white !important;
+    }
+
+    .btn-secondary {
+        background: rgba(102, 126, 234, 0.6) !important;
+        color: white !important;
+        border: 1px solid rgba(102, 126, 234, 0.3) !important;
+    }
+
+    .accordion {
+        background: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--card-shadow);
+        overflow: hidden;
+        animation: slideInUp 0.6s ease-out 0.2s both;
+    }
+
+    .accordion-item {
+        border: none !important;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
+    }
+
+    .accordion-item:last-child {
+        border-bottom: none !important;
+    }
+
+    .accordion-button {
+        background: white !important;
+        border: none !important;
+        padding: 1.5rem 2rem !important;
+        font-weight: 600 !important;
+        font-size: 1.1rem !important;
+        color: #2d3748 !important;
+        transition: var(--transition) !important;
+        position: relative;
+    }
+
+    .accordion-button:not(.collapsed) {
+        background: linear-gradient(135deg, #f0f2ff 0%, #e8ecff 100%) !important;
+        color: var(--primary-color) !important;
+        box-shadow: none !important;
+        border-color: transparent !important;
+    }
+
+    .accordion-button:hover {
+        background: linear-gradient(135deg, #f0f2ff 0%, #e8ecff 100%) !important;
+        color: var(--primary-color) !important;
+    }
+
+    .accordion-button:focus {
+        border-color: transparent !important;
+        box-shadow: none !important;
+    }
+
+    .accordion-button::after {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23667eea'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e") !important;
+        transition: var(--transition) !important;
+    }
+
+    .accordion-collapse {
+        border-top: 1px solid rgba(0, 0, 0, 0.05) !important;
+    }
+
+    .accordion-body {
+        padding: 0 !important;
+    }
+
+    .list-group-item {
+        border: none !important;
+        padding: 1rem 2rem !important;
+        transition: var(--transition) !important;
+        background: transparent !important;
+        font-weight: 500;
+        color: #4a5568;
+    }
+
+    .list-group-item:hover {
+        background: rgba(102, 126, 234, 0.08) !important;
+        transform: translateX(8px);
+        color: var(--primary-color);
+    }
+
+    .accordion-body > div {
+        padding: 2rem !important;
+        text-align: center;
+        color: #a0aec0 !important;
+        font-style: italic;
+        position: relative;
+    }
+
+    .accordion-body > div::before {
+        content: '\f017';
+        font-family: 'Font Awesome 6 Free';
+        font-weight: 900;
+        font-size: 2rem;
+        display: block;
+        margin-bottom: 1rem;
+        opacity: 0.3;
+    }
+
+    .floating-icon {
+        position: absolute;
+        top: 2rem;
+        right: 2rem;
+        font-size: 3rem;
+        opacity: 0.1;
+        color: white;
+    }
+
+    /* Enhanced subtopics display for JavaScript function */
+    #subtopicsContainer .list-group-item {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        padding: 1.25rem 2rem !important;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+        background: transparent !important;
+    }
+
+    #subtopicsContainer .list-group-item:last-child {
+        border-bottom: none !important;
+    }
+
+    #subtopicsContainer .list-group-item:hover {
+        background: linear-gradient(135deg, #f0f2ff 0%, #e8ecff 100%) !important;
+        transform: translateX(8px);
+    }
+
+    #subtopicsContainer .fw-semibold {
+        font-weight: 600 !important;
+        color: #2d3748 !important;
+        margin-bottom: 0.25rem !important;
+    }
+
+    #subtopicsContainer .text-secondary {
+        color: #718096 !important;
+        font-size: 0.9rem !important;
+        font-style: italic !important;
+    }
+
+    #subtopicsContainer .badge {
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)) !important;
+        color: white !important;
+        font-weight: 500 !important;
+        padding: 0.5rem 1rem !important;
+        border-radius: 20px !important;
+        font-size: 0.8rem !important;
+        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+    }
+
+    #subtopicsContainer .btn-sm {
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)) !important;
+        color: white !important;
+        border: none !important;
+        padding: 0.5rem 1rem !important;
+        border-radius: 20px !important;
+        font-size: 0.85rem !important;
+        font-weight: 500 !important;
+        transition: var(--transition) !important;
+        text-decoration: none !important;
+        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+    }
+
+    #subtopicsContainer .btn-sm:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5) !important;
+        color: white !important;
+    }
+
+    @keyframes slideInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .card-title {
+            font-size: 2rem !important;
+        }
+        
+        .card-body {
+            padding: 2rem 1.5rem !important;
+        }
+        
+        #subtopicsContainer .list-group-item {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 1rem !important;
+        }
+        
+        #subtopicsContainer .d-flex {
+            width: 100% !important;
+        }
+
+        .navbar-brand {
+            font-size: 1.3rem !important;
+        }
+
+        .navbar-nav .nav-link {
+            padding: 0.5rem 0.75rem !important;
+            margin: 0.1rem 0 !important;
+        }
+
+        .container {
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+    }
+</style>
+
+<!-- Navigation Bar -->
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+    <div class="container">
+        <img src="/static/img/logo.png" alt="logo" width="90px" height="60px">
+        
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'dashboard' %}">
+                        <i class="fas fa-home me-1"></i>
+                        Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="">
+                        <i class="fas fa-book me-1"></i>
+                        All Courses
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="">
+                        <i class="fas fa-user-graduate me-1"></i>
+                        My Courses
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="">
+                        <i class="fas fa-certificate me-1"></i>
+                        Certificates
+                    </a>
+                </li>
+            </ul>
+            
+            <ul class="navbar-nav">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" 
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-user-circle me-1"></i>
+                        {% if user.is_authenticated %}{{ user.first_name|default:user.username }}{% else %}Account{% endif %}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        {% if user.is_authenticated %}
+                            <li><a class="dropdown-item" href="">
+                                <i class="fas fa-user me-2"></i>Profile
+                            </a></li>
+                            <li><a class="dropdown-item" href="">
+                                <i class="fas fa-cog me-2"></i>Settings
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="">
+                                <i class="fas fa-sign-out-alt me-2"></i>Logout
+                            </a></li>
+                        {% else %}
+                            <li><a class="dropdown-item" href="">
+                                <i class="fas fa-sign-in-alt me-2"></i>Login
+                            </a></li>
+                            <li><a class="dropdown-item" href="">
+                                <i class="fas fa-user-plus me-2"></i>Register
+                            </a></li>
+                        {% endif %}
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Error Display (only shown when there's an error) -->
+{% if error %}
+<div class="error-alert">
+    <div class="container">
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <strong>Error:</strong> {{ error }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Add floating icon to course header -->
+<div style="position: relative;">
+    <div class="floating-icon">
+        <i class="fas fa-graduation-cap"></i>
+    </div>
+</div>
+<div class="container py-5">
+  <!-- Course Header -->
+  <div class="card shadow-sm border-0 mb-4">
+    <div class="card-body text-center">
+      <h1 class="card-title fw-bold mb-2">{{ course_name }}</h1>
+      <p class="lead text-secondary mb-4">
+        Unlock new knowledge, one step at a time—your journey starts here.
+      </p>
+      <span class="badge bg-primary me-2 mb-2">Status: {{ status }}</span>
+      <span class="badge bg-success mb-2">Score: {{ score }}</span>
+      
+      <br>
+      {% if status == "Completed" %}
+  <a href="{% url 'certificate_page' course_slug=course_slug %}"
+     class="btn btn-lg btn-success fw-semibold mt-3 mb-2">
+    <i class="fas fa-certificate me-2"></i>
+    View Certificate
+  </a>
+{% endif %}
+  {% if topics and topics.0.subtopics and topics.0.subtopics.0 %}
+    <a href="{% url 'subtopic_page' course_slug=course_slug topic_slug=topics.0.topic_slug subtopic_slug=topics.0.subtopics.0.slug %}"
+       class="btn btn-lg btn-primary fw-semibold mt-3 mb-2">
+      <i class="fas fa-play me-2"></i>
+      Start Course
+    </a>
+  {% else %}
+    <button class="btn btn-lg btn-secondary mt-3 mb-2" disabled>
+      <i class="fas fa-clock me-2"></i>
+      Start Course (Coming Soon)
+    </button>
+  {% endif %}
+
+    </div>
+  </div>
+
+  <!-- Bootstrap Accordion for Topics and Subtopics -->
+  <div class="accordion" id="topicsAccordion">
+    {% for topic in topics %}
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="heading{{ forloop.counter }}">
+          <button class="accordion-button collapsed fw-semibold" type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#collapse{{ forloop.counter }}"
+                  aria-expanded="false"
+                  aria-controls="collapse{{ forloop.counter }}">
+              <i class="fas fa-book-open me-3"></i>
+              {{ topic.topic }}
+          </button>
+        </h2>
+        <div id="collapse{{ forloop.counter }}"
+             class="accordion-collapse collapse"
+             aria-labelledby="heading{{ forloop.counter }}"
+             data-bs-parent="#topicsAccordion">
+          <div class="accordion-body p-0">
+            {% if topic.subtopics %}
+              <ul class="list-group list-group-flush">
+                {% for sub in topic.subtopics %}
+                  <li class="list-group-item py-2">
+                    <i class="fas fa-play-circle me-2" style="color: var(--primary-color);"></i>
+                    {{ sub.name }}
+                  </li>
+                {% endfor %}
+              </ul>
+            {% else %}
+              <div class="px-3 py-2 text-muted fst-italic">No subtopics for this topic yet.</div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- Bootstrap JS bundle (Popper included) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Render topicsData as JSON, not as a quoted string -->
+<script>
+const topicsData = {{ topics|safe }};
+function showSubtopics(select){
+    const idx = select.value;
+    const container = document.getElementById('subtopicsContainer');
+    container.innerHTML = "";
+    if(idx === "") {
+      container.innerHTML = '<p class="text-muted mb-1">Select a topic above to see its subtopics &amp; recommended learning resources.</p>';
+      return;
+    }
+    const subtopics = topicsData[idx]['subtopics'];
+    if(subtopics.length === 0){
+      container.innerHTML = '<p class="text-warning mb-1">No video-based subtopics found for this topic yet.</p>';
+      return;
+    }
+    let html = '<ul class="list-group list-group-flush">';
+    for(let i=0; i < subtopics.length; i++){
+        html += `<li class="list-group-item bg-transparent px-0 py-2">
+          <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between">
+            <div>
+              <span class="fw-semibold">${subtopics[i].name}</span>
+              <br>
+              ${subtopics[i].video_title ? `<span class="text-secondary small">"${subtopics[i].video_title}"</span>` : ""}
+            </div>
+            <div>
+              ${subtopics[i].video_author ? `<span class="badge bg-info text-dark me-2">${subtopics[i].video_author}</span>` : ""}
+              ${subtopics[i].video_link ? `<a href="${subtopics[i].video_link}" target="_blank" class="btn btn-sm btn-outline-primary ms-2">Watch Video</a>` : ""}
+            </div>
+          </div>
+        </li>`;
+    }
+    html += "</ul>";
+    container.innerHTML = html;
+}
+
+// Enhanced UI interactions (additional functionality)
+document.addEventListener('DOMContentLoaded', function() {
+    // Add smooth scrolling
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+
+    // Add entrance animations
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.animation = 'slideInUp 0.6s ease-out forwards';
+            }
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.accordion-item').forEach(item => {
+        observer.observe(item);
+    });
+
+    // Enhanced button interactions
+    document.querySelectorAll('.btn').forEach(btn => {
+        btn.addEventListener('mouseenter', function() {
+            if (!this.disabled) {
+                this.style.transform = 'translateY(-2px) scale(1.02)';
+            }
+        });
+        
+        btn.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0) scale(1)';
+        });
+    });
+
+    // Navbar scroll effect
+    let lastScrollTop = 0;
+    const navbar = document.querySelector('.navbar');
+    
+    window.addEventListener('scroll', function() {
+        let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        
+        if (scrollTop > lastScrollTop && scrollTop > 100) {
+            // Scrolling down
+            navbar.style.transform = 'translateY(-100%)';
+        } else {
+            // Scrolling up
+            navbar.style.transform = 'translateY(0)';
+        }
+        
+        // Add backdrop blur effect when scrolled
+        if (scrollTop > 50) {
+            navbar.style.backdropFilter = 'blur(20px)';
+            navbar.style.background = 'rgba(102, 126, 234, 0.95)';
+        } else {
+            navbar.style.backdropFilter = 'blur(10px)';
+            navbar.style.background = 'var(--primary-gradient)';
+        }
+        
+        lastScrollTop = scrollTop;
+    });
+
+    // Auto-dismiss alerts after 5 seconds
+    const alerts = document.querySelectorAll('.alert');
+    alerts.forEach(alert => {
+        setTimeout(() => {
+            const bsAlert = new bootstrap.Alert(alert);
+            bsAlert.close();
+        }, 5000);
+    });
+
+    // Add active class to current navbar item
+    const currentPath = window.location.pathname;
+    document.querySelectorAll('.navbar-nav .nav-link').forEach(link => {
+        if (link.getAttribute('href') === currentPath) {
+            link.classList.add('active');
+        }
+    });
+});
+</script>

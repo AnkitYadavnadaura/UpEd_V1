@@ -1,0 +1,726 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>UpEd — AI Powered Coding Platform</title>
+  <link rel="icon" href="/static/img/logo.png" />
+  <!-- Tailwind CDN for quick demo -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Small custom styles */
+    .hero-bg { background: linear-gradient(135deg,#eef2ff 0%, #e6f0ff 45%, #ffffff 100%); }
+    .glass { background: rgba(255,255,255,0.6); backdrop-filter: blur(6px); }
+    .card-glow:hover { box-shadow: 0 10px 30px rgba(37,99,235,0.12); transform: translateY(-6px); }
+    [data-animate]{ opacity:0; transform:translateY(18px); transition:opacity .6s ease, transform .6s ease; }
+    [data-animate].visible{ opacity:1; transform:none; }
+     .editor {
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+      max-width: 600px;
+      width: 100%;
+      overflow: hidden;
+    }
+    pre {
+      margin: 0;
+      font-size: 14px;
+      max-height: 300px;
+      overflow: auto;
+    }
+    .controls {
+      display: flex;
+      justify-content: flex-end;
+      padding: 0;
+    }
+    .run-btn {
+      background: #22c55e;
+      color: white;
+      border: none;
+      padding: 1px 6px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .run-btn:active {
+      transform: scale(0.95);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3) inset;
+    }
+    .output {
+      background: #0f172a;
+      border-radius: 12px;
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+      padding: 15px;
+      max-width: 600px;
+      width: 100%;
+      font-size: 14px;
+      color: #22c55e;
+      display: none;
+      white-space: pre-line;
+    }
+  </style>
+<style>
+    /* Hide horizontal scrollbar */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    /* Animation */
+    .card-hidden {
+      transform: translateY(40px) rotateY(20deg);
+      opacity: 0;
+      transition: transform 1s ease, opacity 1s ease, box-shadow 0.4s ease;
+    }
+    .card-show {
+      transform: rotateY(0deg) translateY(0);
+      opacity: 1;
+    }
+  </style>
+</head>
+<body class="antialiased text-slate-800 bg-white">
+  <!-- NAVBAR -->
+      <header class="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+                <div class="h-10 w-10 flex items-center justify-center bg-blue-600 rounded-full text-white text-xl font-bold">U</div>
+                <span class="text-2xl font-extrabold text-gray-800">UpEd</span>
+            </div>
+            <div class="hidden md:flex items-center space-x-6 lg:space-x-8">
+                <a href="#" class="text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Home</a>
+                <a href="#features" class="text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Features</a>
+                <a href="#journey" class="text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Journey</a>
+                <a href="#testimonials" class="text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Testimonials</a>
+            </div>
+            <div class="hidden md:flex items-center space-x-3">
+                <button class="px-6 py-2 rounded-full border border-gray-300 text-gray-600 font-medium hover:border-blue-600 hover:text-blue-600 transition duration-300" onclick="window.location = '/login'">Log In</button>
+                <button class="px-6 py-2 rounded-full bg-blue-600 text-white font-medium hover:bg-blue-700 transition duration-300" onclick="window.location = '/register'">Sign Up</button>
+            </div>
+            <!-- Mobile Menu Toggle (Hamburger Icon) -->
+            <div class="md:hidden flex items-center">
+                <button id="mobile-menu-button" class="text-gray-600 hover:text-blue-600 focus:outline-none">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </button>
+            </div>
+        </nav>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white shadow-lg py-4">
+            <div class="flex flex-col space-y-2 px-4">
+                <a href="#" class="block text-gray-600 hover:bg-gray-100 rounded-lg p-2 transition duration-300">Home</a>
+                <a href="#features" class="block text-gray-600 hover:bg-gray-100 rounded-lg p-2 transition duration-300">Features</a>
+                <a href="#how" class="block text-gray-600 hover:bg-gray-100 rounded-lg p-2 transition duration-300">Journey</a>
+                <a href="#demo" class="block text-gray-600 hover:bg-gray-100 rounded-lg p-2 transition duration-300">Testimonials</a>
+                <button class="w-full text-left py-2 px-4 rounded-lg text-gray-600 font-medium hover:bg-gray-100 transition duration-300" onclick="window.location = '/login'">Log In</button>
+                <button class="w-full text-left py-2 px-4 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 transition duration-300" onclick="window.location = '/register'"">Sign Up</button>
+            </div>
+        </div>
+    </header>
+    <script>
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu1 = document.getElementById('mobile-menu');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu1.classList.toggle('hidden');
+        });
+
+        function showMessage(title, message) {
+            alert(`${title}: ${message}`);
+        }
+    </script>
+
+  <!-- HERO -->
+  <main class="pt-20">
+    <section class="hero-bg py-20">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+              <div class="space-y-6 relative z-10">
+      <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 leading-tight">
+        Learn. Build. <span class="text-indigo-600">Get Hired</span> — Smarter.
+      </h1>
+      <p class="text-lg text-slate-600 max-w-lg">
+        AI-powered learning platform to master coding workflows, simulate interviews, analyze projects from GitHub, and practice in a sandboxed editor.
+      </p>
+
+      <!-- CTA Buttons -->
+      <div class="flex gap-4">
+        <a href="#" class="px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold shadow-lg hover:scale-105 transition">🚀 Get Started Free</a>
+        <a href="#" class="px-6 py-3 rounded-xl bg-white border border-slate-200 shadow hover:shadow-md transition flex items-center gap-2">
+          ▶ Watch Demo
+        </a>
+      </div>
+
+      <!-- Features -->
+      <div class="flex flex-wrap gap-3 pt-4">
+        <span class="px-4 py-2 rounded-full bg-white/70 backdrop-blur shadow text-slate-700 flex items-center gap-2 hover:scale-105 transition">
+          🤖 AI Course Generator
+        </span>
+        <span class="px-4 py-2 rounded-full bg-white/70 backdrop-blur shadow text-slate-700 flex items-center gap-2 hover:scale-105 transition">
+          👩‍💻 Sandbox Editor
+        </span>
+        <span class="px-4 py-2 rounded-full bg-white/70 backdrop-blur shadow text-slate-700 flex items-center gap-2 hover:scale-105 transition">
+          📊 Project Analyzer
+        </span>
+      </div>
+
+      <!-- Search Bar -->
+      <div class="mt-6 flex rounded-full shadow-lg overflow-hidden border border-slate-200 max-w-lg bg-white">
+        <input type="text" placeholder="Search a topic, book or repo (try: Algorithms)" 
+               class="flex-1 px-5 py-3 outline-none text-slate-700" />
+        <button id="heroSearchBtn" class="px-6 bg-indigo-600 text-white font-medium hover:bg-indigo-700 transition">
+          Search
+        </button>
+      </div>
+    </div>
+
+          <!-- Right: editor mockup -->
+          <div class="relative">
+            <div class="mx-auto max-w-md rounded-2xl overflow-hidden shadow-2xl card-glow">
+              <div class="bg-slate-800 text-white px-4 py-3 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div class="w-2 h-2 bg-red-400 rounded-full"></div>
+                  <div class="w-2 h-2 bg-amber-400 rounded-full"></div>
+                  <div class="w-2 h-2 bg-emerald-400 rounded-full"></div>
+                </div>
+                <div class="controls">
+      <button class="run-btn" id="runBtn">▶ Run</button>
+    </div>
+              </div>
+              <pre class="p-6 bg-white text-slate-900 text-sm" style="height:280px; overflow:hidden;">
+  <code id="animatedCode" class="language-js"></code>
+  
+<div class="output" id="outputBox"></div>
+
+</pre>
+<div class="output" id="outputBox"></div>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-javascript.js"></script>
+
+  <script>
+    const snippets = [
+  {
+    code: `console.log("🚀 Welcome to Coding!");
+console.log("Hello, World!");`,
+    output: "🚀 Welcome to Coding!\nHello, World!"
+  },
+  {
+    code: `function fib(n) {
+  if (n <= 1) return n;
+  return fib(n-1) + fib(n-2);
+}
+
+console.log("Fibonacci(7):", fib(7));`,
+    output: "Fibonacci(7): 13"
+  },
+  {
+    code: `const quotes = [
+  "Keep pushing forward 💪",
+  "Every bug teaches something 🐞",
+  "Code is poetry ✨"
+];
+console.log(quotes[Math.floor(Math.random() * quotes.length)]);`,
+    output: "Keep pushing forward 💪\n// or\nEvery bug teaches something 🐞\n// or\nCode is poetry ✨"
+  },
+  {
+    code: `function getData() {
+  return new Promise(res => setTimeout(() =>{ 
+    res("⚡ Data Loaded!"), 1000))
+  };
+}
+
+(async () => {
+  const data = await getData();
+  console.log(data);
+})();`,
+    output: "⚡ Data Loaded!"
+  },
+  {
+    code: `console.log("  /\\\\_/\\\\");
+console.log(" ( o.o )  => Happy Coding!");
+console.log("  > ^ <");`,
+    output: "  /\\_/\\\n ( o.o )  => Happy Coding!\n  > ^ <"
+  },
+  {
+    code: `let nums = [42, 3, 17, 99, 8];
+console.log("Before:", nums);
+console.log("After :", nums.sort((a,b) => a - b));`,
+    output: "Before: [42, 3, 17, 99, 8]\nAfter : [3, 8, 17, 42, 99]"
+  },
+  {
+    code: `function chatbot(msg) {
+  return msg.includes("hello")
+    ? "Hi, I'm your AI buddy 🤖"
+    : "Tell me more!";
+}
+
+console.log(chatbot("hello bot"));`,
+    output: "Hi, I'm your AI buddy 🤖"
+  }
+];
+
+
+    const codeElement = document.getElementById("animatedCode");
+    const runBtn = document.getElementById("runBtn");
+    const outputBox = document.getElementById("outputBox");
+
+    let snippetIndex = 0;
+    let charIndex = 0;
+
+    function typeCode(snippet, callback) {
+      if (charIndex <= snippet.code.length) {
+        codeElement.textContent = snippet.code.substring(0, charIndex);
+        Prism.highlightElement(codeElement);
+        charIndex++;
+        setTimeout(() => typeCode(snippet, callback), 40);
+      } else {
+        callback();
+      }
+    }
+
+    function eraseCode(callback) {
+      if (charIndex >= 0) {
+        codeElement.textContent = codeElement.textContent.substring(0, charIndex);
+        Prism.highlightElement(codeElement);
+        charIndex--;
+        setTimeout(() => eraseCode(callback), 20);
+      } else {
+        callback();
+      }
+    }
+
+    function runSnippet(snippet) {
+      runBtn.textContent = "⏳ Running...";
+      runBtn.disabled = true;
+
+      setTimeout(() => {
+        runBtn.textContent = "▶ Run";
+        runBtn.disabled = false;
+        outputBox.style.display = "block";
+        outputBox.textContent = snippet.output;
+
+        // After showing output, wait and erase
+        setTimeout(() => {
+          outputBox.style.display = "none";
+          eraseCode(() => {
+            snippetIndex = (snippetIndex + 1) % snippets.length;
+            charIndex = 0;
+            typeCode(snippets[snippetIndex], () => runSnippet(snippets[snippetIndex]));
+          });
+        }, 2000);
+      }, 1500);
+    }
+
+    // Start first snippet
+    typeCode(snippets[snippetIndex], () => runSnippet(snippets[snippetIndex]));
+  </script>
+            </div>
+            <div class="absolute -bottom-6 left-3 text-xs text-slate-600 bg-white/70 px-3 py-2 rounded-lg glass flex items-center gap-2">Connect GitHub → Analyze Repo</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="relative py-24 bg-gradient-to-b from-slate-50 via-white to-indigo-50 overflow-hidden">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8 text-center">
+    <h2 class="text-4xl font-extrabold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+      Platform Features
+    </h2>
+    <p class="mt-4 text-lg text-slate-600">
+      Everything a developer needs — learning, building, testing, and interview prep in one place.
+    </p>
+
+    <div class="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+      <!-- AI Generated Courses -->
+      <div data-animate class="feature-card group relative p-8 rounded-2xl bg-white border border-slate-200 shadow-[0_10px_25px_rgba(0,0,0,0.08)] 
+                  transition-transform duration-300 ease-out hover:-translate-y-3 hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)]"
+           onmousemove="tiltCard(event,this)" onmouseleave="resetTilt(this)">
+        <div class="w-14 h-14 mx-auto rounded-xl bg-gradient-to-tr from-blue-500 to-indigo-500 flex items-center justify-center text-white text-2xl font-bold shadow-lg">
+          📚
+        </div>
+        <h3 class="mt-6 font-semibold text-lg">AI-Generated Courses</h3>
+        <p class="mt-2 text-slate-600 text-sm">Create courses from any book, topic or curriculum automatically with our AI authoring engine.</p>
+      </div>
+
+      <!-- Interview Simulator -->
+      <div data-animate class="feature-card group relative p-8 rounded-2xl bg-white border border-slate-200 shadow-[0_10px_25px_rgba(0,0,0,0.08)] 
+                  transition-transform duration-300 ease-out hover:-translate-y-3 hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)]"
+           onmousemove="tiltCard(event,this)" onmouseleave="resetTilt(this)">
+        <div class="w-14 h-14 mx-auto rounded-xl bg-gradient-to-tr from-amber-200 to-amber-400 flex items-center justify-center text-amber-800 text-2xl font-semibold shadow-lg">
+          🎤
+        </div>
+        <h3 class="mt-6 font-semibold text-lg">Interview Simulator</h3>
+        <p class="mt-2 text-slate-600 text-sm">Live coding interviews with timed prompts, hints and scoring — practice with realistic interviewer AI.</p>
+      </div>
+
+      <!-- Project Analyzer -->
+      <div data-animate class="feature-card group relative p-8 rounded-2xl bg-white border border-slate-200 shadow-[0_10px_25px_rgba(0,0,0,0.08)] 
+                  transition-transform duration-300 ease-out hover:-translate-y-3 hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)]"
+           onmousemove="tiltCard(event,this)" onmouseleave="resetTilt(this)">
+        <div class="w-14 h-14 mx-auto rounded-xl bg-gradient-to-tr from-emerald-200 to-emerald-400 flex items-center justify-center text-emerald-800 text-2xl font-semibold shadow-lg">
+          🔍
+        </div>
+        <h3 class="mt-6 font-semibold text-lg">Project Analyzer</h3>
+        <p class="mt-2 text-slate-600 text-sm">Connect your GitHub repo and get automated feedback: code quality, test coverage tips and improvement tasks.</p>
+      </div>
+
+      <!-- Sandbox Editor -->
+      <div data-animate class="feature-card group relative p-8 rounded-2xl bg-white border border-slate-200 shadow-[0_10px_25px_rgba(0,0,0,0.08)] 
+                  transition-transform duration-300 ease-out hover:-translate-y-3 hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)]"
+           onmousemove="tiltCard(event,this)" onmouseleave="resetTilt(this)">
+        <div class="w-14 h-14 mx-auto rounded-xl bg-gradient-to-tr from-indigo-200 to-indigo-400 flex items-center justify-center text-indigo-800 text-2xl font-semibold shadow-lg">
+          🧪
+        </div>
+        <h3 class="mt-6 font-semibold text-lg">Sandbox Editor</h3>
+        <p class="mt-2 text-slate-600 text-sm">Run code in an isolated environment with multiple languages and instant output — no setup required.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+function tiltCard(e, card) {
+  const rect = card.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+  const centerX = rect.width / 2;
+  const centerY = rect.height / 2;
+  const rotateX = ((y - centerY) / centerY) * 6; 
+  const rotateY = ((x - centerX) / centerX) * -6; 
+  card.style.transform = `rotateX(${25}deg) rotateY(${5}deg) scale(0.8)`;
+}
+function resetTilt(card) {
+  card.style.transform = "rotateX(0deg) rotateY(0deg) scale(1)";
+}
+</script>
+
+    <!-- HOW IT WORKS -->
+<section class="max-w-6xl mx-auto px-4 py-12 text-center">
+  <h2 class="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-8 bg-gradient-to-r from-blue-600 to-cyan-400 bg-clip-text text-transparent">
+    How it Works
+  </h2>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    <!-- Card 1 -->
+    <div class="bg-white/80 rounded-2xl shadow-lg p-6 backdrop-blur-md cursor-pointer transition transform hover:-translate-y-2 hover:scale-105 hover:shadow-2xl">
+      <span class="flex justify-center items-center w-12 h-12 rounded-full bg-sky-100 text-blue-600 text-2xl font-bold shadow-md mx-auto mb-3">1</span>
+      <h3 class="text-lg font-semibold mb-2">Generate Course</h3>
+      <p class="text-sm text-slate-600">Upload a book or choose a topic — our AI authors a course with lessons and exercises.</p>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="bg-white/80 rounded-2xl shadow-lg p-6 backdrop-blur-md cursor-pointer transition transform hover:-translate-y-2 hover:scale-105 hover:shadow-2xl">
+      <span class="flex justify-center items-center w-12 h-12 rounded-full bg-sky-100 text-blue-600 text-2xl font-bold shadow-md mx-auto mb-3">2</span>
+      <h3 class="text-lg font-semibold mb-2">Practice & Build</h3>
+      <p class="text-sm text-slate-600">Use our sandbox editor and guided projects to build hands-on experience.</p>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="bg-white/80 rounded-2xl shadow-lg p-6 backdrop-blur-md cursor-pointer transition transform hover:-translate-y-2 hover:scale-105 hover:shadow-2xl">
+      <span class="flex justify-center items-center w-12 h-12 rounded-full bg-sky-100 text-blue-600 text-2xl font-bold shadow-md mx-auto mb-3">3</span>
+      <h3 class="text-lg font-semibold mb-2">Analyze Repo</h3>
+      <p class="text-sm text-slate-600">Connect GitHub to receive a scored report with actionable fixes and suggestions.</p>
+    </div>
+
+    <!-- Card 4 -->
+    <div class="bg-white/80 rounded-2xl shadow-lg p-6 backdrop-blur-md cursor-pointer transition transform hover:-translate-y-2 hover:scale-105 hover:shadow-2xl">
+      <span class="flex justify-center items-center w-12 h-12 rounded-full bg-sky-100 text-blue-600 text-2xl font-bold shadow-md mx-auto mb-3">4</span>
+      <h3 class="text-lg font-semibold mb-2">Interview Ready</h3>
+      <p class="text-sm text-slate-600">Take simulated interviews and assessments to prepare for real interviews.</p>
+    </div>
+  </div>
+</section>
+
+  <script>
+    const cards = document.querySelectorAll(".card-hidden");
+    let index = 0;
+
+    function showNextCard() {
+      if (index < cards.length) {
+        cards[index].classList.add("card-show");
+        index++;
+        setTimeout(showNextCard, 800); // reveal speed
+      }
+    }
+
+    showNextCard();
+  </script>
+</div>
+    <!-- DEMO / SHOWCASE -->
+    <section class="max-w-7xl mx-auto px-6 py-16 grid lg:grid-cols-2 gap-12 items-center">
+  <!-- Left Content -->
+  <div>
+    <h2 class="text-3xl md:text-4xl font-extrabold mb-4">
+      <span class="bg-gradient-to-r from-blue-600 to-cyan-400 bg-clip-text text-transparent">
+        Live Demo:
+      </span> 
+      Interview Simulator & Project Analyzer
+    </h2>
+
+    <p class="text-slate-600 mb-6">
+      Watch a short walkthrough of the interview simulator and a GitHub analysis report.
+    </p>
+
+    <div class="flex flex-wrap gap-4 mb-4">
+      <a id="openSimulator" href="#"
+        class="px-5 py-3 rounded-lg bg-gradient-to-r from-orange-500 to-yellow-500 text-white font-semibold shadow-md hover:shadow-lg hover:scale-105 transition">
+        🎯 Try Interview Simulator
+      </a>
+      <a id="analyzeRepo" href="#"
+        class="px-5 py-3 rounded-lg border border-slate-300 bg-white text-slate-700 font-semibold shadow-sm hover:bg-slate-50 hover:shadow-md transition">
+        🔍 Analyze GitHub Repo
+      </a>
+    </div>
+
+    <p class="text-xs text-slate-500">
+      Note: The demo buttons open mocked tools for preview. Integrate real endpoints for full functionality.
+    </p>
+  </div>
+
+  <!-- Right Demo Box -->
+  <div class="relative bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl shadow-2xl flex items-center justify-center h-64 md:h-80 lg:h-96 overflow-hidden">
+    <span class="text-slate-300 text-lg">Demo Video / GIF</span>
+    <!-- Play Button Overlay -->
+    <div class="absolute inset-0 flex items-center justify-center">
+      <button
+        class="w-16 h-16 flex items-center justify-center rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-white hover:bg-white/30 transition">
+        ▶
+      </button>
+    </div>
+  </div>
+</section>
+
+    <!-- TESTIMONIALS -->
+    <section class="max-w-7xl mx-auto px-6 py-16">
+  <!-- Section Heading -->
+  <div class="text-center mb-12">
+    <h2 class="text-3xl md:text-4xl font-extrabold">
+      What learners say
+    </h2>
+    <div class="w-24 h-1 bg-gradient-to-r from-blue-600 to-cyan-400 mx-auto mt-3 rounded-full"></div>
+  </div>
+
+  <!-- Testimonials Grid -->
+  <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+    
+    <!-- Card 1 -->
+    <div class="bg-white rounded-2xl shadow-md hover:shadow-lg transition p-6 relative">
+      <div class="absolute -top-5 left-6 text-4xl text-blue-500 opacity-20">“</div>
+      <p class="text-slate-700 mb-4 relative z-10">
+        The interview simulator helped me practice under pressure — I improved my timings and got hired!
+      </p>
+      <p class="font-semibold text-slate-900">— Priya, <span class="text-blue-600">Software Engineer</span></p>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="bg-white rounded-2xl shadow-md hover:shadow-lg transition p-6 relative">
+      <div class="absolute -top-5 left-6 text-4xl text-blue-500 opacity-20">“</div>
+      <p class="text-slate-700 mb-4 relative z-10">
+        Project Analyzer gave actionable fixes for my repo — code quality improved drastically.
+      </p>
+      <p class="font-semibold text-slate-900">— Rohit, <span class="text-blue-600">Backend Dev</span></p>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="bg-white rounded-2xl shadow-md hover:shadow-lg transition p-6 relative">
+      <div class="absolute -top-5 left-6 text-4xl text-blue-500 opacity-20">“</div>
+      <p class="text-slate-700 mb-4 relative z-10">
+        I created a course from a book and taught my study group. Amazing!
+      </p>
+      <p class="font-semibold text-slate-900">— Maya, <span class="text-blue-600">Mentor</span></p>
+    </div>
+
+  </div>
+</section>
+
+    <!-- PRICING -->
+    <section class="max-w-7xl mx-auto px-6 py-16">
+  <!-- Heading -->
+  <div class="text-center mb-12">
+    <h2 class="text-3xl md:text-4xl font-extrabold">Pricing that scales with you</h2>
+    <p class="text-slate-600 mt-2">Choose a plan that fits your learning journey.</p>
+  </div>
+
+  <!-- Pricing Grid -->
+  <div class="grid md:grid-cols-3 gap-8">
+    
+    <!-- Free Plan -->
+    <div class="bg-white rounded-2xl shadow-md hover:shadow-xl transition p-8 text-center border border-slate-200">
+      <h3 class="text-xl font-bold mb-2">Free</h3>
+      <p class="text-slate-600 mb-6">Sandbox editor, limited AI courses</p>
+      <p class="text-3xl font-extrabold mb-6">$0</p>
+      <a href="#"
+        class="px-6 py-3 rounded-lg border border-slate-300 text-slate-700 font-semibold hover:bg-slate-50 transition">
+        Start Free
+      </a>
+    </div>
+
+    <!-- Pro Plan (Highlighted) -->
+    <div class="relative bg-gradient-to-b from-blue-50 to-white rounded-2xl shadow-xl hover:shadow-2xl transition p-8 text-center border-2 border-blue-500">
+      <span class="absolute -top-4 left-1/2 -translate-x-1/2 bg-blue-600 text-white text-sm px-3 py-1 rounded-full shadow-md">
+        Most Popular
+      </span>
+      <h3 class="text-xl font-bold mb-2">Pro</h3>
+      <p class="text-slate-600 mb-6">Interview simulator, GitHub analyzer, full AI courses</p>
+      <p class="text-3xl font-extrabold mb-6">$12<span class="text-lg font-semibold">/mo</span></p>
+      <a href="#"
+        class="px-6 py-3 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition shadow-md">
+        Get Pro
+      </a>
+    </div>
+
+    <!-- Enterprise Plan -->
+    <div class="bg-white rounded-2xl shadow-md hover:shadow-xl transition p-8 text-center border border-slate-200">
+      <h3 class="text-xl font-bold mb-2">Enterprise</h3>
+      <p class="text-slate-600 mb-6">Team features, SSO, priority support</p>
+      <p class="text-3xl font-extrabold mb-6">Contact</p>
+      <a href="#"
+        class="px-6 py-3 rounded-lg border border-slate-300 text-slate-700 font-semibold hover:bg-slate-50 transition">
+        Contact Sales
+      </a>
+    </div>
+
+  </div>
+</section>
+
+    <!-- CTA BANNER -->
+    <section class="py-12 bg-gradient-to-r from-sky-600 to-emerald-400 text-white rounded-tl-3xl rounded-tr-3xl">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div>
+          <h3 class="text-2xl font-extrabold">Ready to level up your coding career?</h3>
+          <p class="mt-1 opacity-90">Sign up and start building real projects with AI guidance.</p>
+        </div>
+        <div class="flex gap-3">
+          <a href="#pricing" class="px-5 py-3 bg-white text-sky-600 rounded-md font-semibold">Get Started</a>
+          <a href="#demo" class="px-5 py-3 border border-white/40 rounded-md">Watch Demo</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="mt-8 bg-slate-900 text-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div>
+          <div class="text-2xl font-bold">UpEd</div>
+          <p class="mt-2 text-slate-300">AI-powered learning, interview prep, and project feedback for developers.</p>
+        </div>
+        <div>
+          <h4 class="font-semibold">Product</h4>
+          <ul class="mt-3 space-y-2 text-slate-300">
+            <li><a href="#" class="hover:text-white">Courses</a></li>
+            <li><a href="#" class="hover:text-white">Interview Simulator</a></li>
+            <li><a href="#" class="hover:text-white">Project Analyzer</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-semibold">Get in touch</h4>
+          <p class="mt-3 text-slate-300">Contact: hello@uped.example</p>
+          <div class="mt-4 flex gap-2">
+            <a href="#" class="p-2 rounded bg-slate-700">GH</a>
+            <a href="#" class="p-2 rounded bg-slate-700">LI</a>
+            <a href="#" class="p-2 rounded bg-slate-700">TW</a>
+          </div>
+        </div>
+      </div>
+      <div class="border-t border-slate-800 text-slate-400 text-center py-4">© 2025 UpEd — All rights reserved</div>
+    </footer>
+  </main>
+
+  <!-- Modals & Mock tools -->
+  <div id="simModal" class="fixed inset-0 hidden items-center justify-center bg-black/40 z-50">
+    <div class="bg-white rounded-xl w-11/12 max-w-3xl p-6">
+      <div class="flex justify-between items-center">
+        <h3 class="text-lg font-semibold">Interview Simulator (Mock)</h3>
+        <button id="closeSim" class="p-2">✕</button>
+      </div>
+      <div class="mt-4">
+        <p class="text-sm text-slate-600">This is a demo of the interview simulator. Integrate your assessment engine to run real sessions.</p>
+        <div class="mt-4 bg-slate-100 p-4 rounded">
+          <div class="font-mono text-sm">// Example prompt
+Implement a function that returns the nth Fibonacci number with O(n) time.</div>
+          <div class="mt-3 flex gap-2">
+            <button class="px-3 py-2 bg-sky-600 text-white rounded">Start</button>
+            <button class="px-3 py-2 border rounded">View Hints</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="analyzeModal" class="fixed inset-0 hidden items-center justify-center bg-black/40 z-50">
+    <div class="bg-white rounded-xl w-11/12 max-w-2xl p-6">
+      <div class="flex justify-between items-center">
+        <h3 class="text-lg font-semibold">Project Analyzer (Mock)</h3>
+        <button id="closeAnalyze" class="p-2">✕</button>
+      </div>
+      <div class="mt-4">
+        <p class="text-sm text-slate-600">Paste a GitHub repo URL to see a sample analysis report.</p>
+        <div class="mt-4 flex gap-2">
+          <input id="repoUrl" class="flex-1 px-3 py-2 border rounded" placeholder="https://github.com/username/repo" />
+          <button id="runAnalyze" class="px-4 py-2 bg-emerald-500 text-white rounded">Analyze</button>
+        </div>
+        <div id="analysisResult" class="mt-4 text-sm text-slate-700"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Mobile toggle
+    const mobileBtn = document.getElementById('mobileBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    mobileBtn && mobileBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+
+    // Dark mode toggle (simple)
+    const darkToggle = document.getElementById('darkToggle');
+    darkToggle && darkToggle.addEventListener('click', () => {
+      document.documentElement.classList.toggle('dark');
+      document.body.classList.toggle('bg-slate-900');
+      document.body.classList.toggle('text-white');
+    });
+
+    // Hero search demo
+    document.getElementById('heroSearchBtn').addEventListener('click', () => {
+      const q = document.getElementById('heroSearch').value.trim();
+      if (!q) return alert('Try searching for a topic, e.g., "Algorithms"');
+      alert('Search demo: ' + q + '\n\n(Implement real search route in backend)');
+    });
+
+    // Demo modals
+    const simModal = document.getElementById('simModal');
+    const analyzeModal = document.getElementById('analyzeModal');
+    document.getElementById('openSimulator').addEventListener('click', () => simModal.classList.remove('hidden'));
+    document.getElementById('closeSim').addEventListener('click', () => simModal.classList.add('hidden'));
+    document.getElementById('analyzeRepo').addEventListener('click', () => analyzeModal.classList.remove('hidden'));
+    document.getElementById('closeAnalyze').addEventListener('click', () => analyzeModal.classList.add('hidden'));
+
+    document.getElementById('runAnalyze').addEventListener('click', () => {
+      const url = document.getElementById('repoUrl').value.trim();
+      const result = document.getElementById('analysisResult');
+      if (!url) return alert('Paste a GitHub repo URL to analyze.');
+      // Mocked result
+      result.innerHTML = '<div class="p-4 bg-slate-50 border rounded">\n        <div class="font-semibold">Repo: ' + url + '</div>\n        <div class="mt-2">Score: <strong>72/100</strong></div>\n        <ul class="mt-2 list-disc ml-5 text-sm">\n          <li>Missing test coverage (add unit tests)</li>\n          <li>Large function detected in src/app.js (refactor suggested)</li>\n          <li>Add CI config (GitHub Actions)</li>\n        </ul>\n      </div>';
+    });
+
+    // Observe animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('[data-animate]').forEach(el => observer.observe(el));
+
+    // Small accessibility: smooth scroll on internal links
+    document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener('click', (e) => {
+      const href = a.getAttribute('href');
+      if (href === '#' || href === '') return;
+      const target = document.querySelector(href);
+      if (!target) return;
+      e.preventDefault();
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }));
+    
+  </script>
+</body>
+</html>

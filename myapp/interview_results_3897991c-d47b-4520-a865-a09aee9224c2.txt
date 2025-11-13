@@ -1,0 +1,272 @@
+AI INTERVIEW PREPARATION REPORT
+==================================================
+
+Session ID: 3897991c-d47b-4520-a865-a09aee9224c2
+Date: August 09, 2025 at 12:27 PM
+Input Type: PDF Resume
+Overall Score: 4.4/10
+
+CANDIDATE BACKGROUND:
+Kota , Rajasthan  +91 9116859362  hardikjainharsora@gmail.com  
+ 
+ 
+Hardik Jai n 
+WEB  DEVELOPER  
+ 
+EDUCATION  
+Arya College of Eng ineering  & IT,  
+Jaipur (Rajasthan)  
+B.Tech . in Artificial Intelligence & Data Science  
+CGPA 8.04 
+ 
+St. Joseph Public School,  
+Kota (Rajasthan)  
+CBSE 12th Board  
+Percentage 67.4%  OBJECTIVE  
+An ambitious Web Developer seeking a position to apply and 
+further develop my skills in front -end (HTML, CSS, JavaScript) 
+and back -end (Python/Django) development, complemented by 
+my knowledge of Machine Learning, to contribute to the success 
+of a dynamic and forward -thinking team.  
+CERTIFICAT ES 
+• Fundamental of Digital Marketing  
+               (09/2023 - Present)  
+ 
+• Prompt  Design  In Vertex  AI 
+(05/2024 – Present)  
+ 
+• Develop  Gen AI Apps  With  Gemini  And  
+Streamlit  
+(05/202 4 – Present)  
+ 
+• Introduction  To Generative  Lab 
+(05/2024 – Present)  
+ 
+• Python  
+(01/2025 – Present)  
+ 
+• Pandas  
+(02/2025 – Present)  
+ 
+• Intro to Machine Learning  
+(01/202 5 – Present)  
+ 
+ TECHNICAL SKILLS  
+WEB DEVELOPMENT : HTML, CSS, JAVASCRIPT (BASIC DOM), 
+PYTHON, DJANGO (INTERMEDIATE) , BOOTSTRAP  
+OPERATING SYSTEMS : LINUX (INTERMEDIATE)  
+PROGRAMMING LANGUAGES : C++ (INTERMEDIATE)  
+OTHER  TECHNICAL : BASIC EXCEL , ROBOTICS  
+ 
+DIGITAL MARKETING SKILLS  
+ 
+DIGITAL MARKETING  
+ 
+DESIGN SKILLS  
+ 
+CANVA DESIGN  
+POWERPOINT (PPT)  
+VIDEO EDITING  
+ 
+SOFT SKILLS  
+ 
+COMMUNICATION  
+LEADERSHIP  
+TEAMWORK  
+ 
+ 
+• Machine Learni ng Explainability  
+(02/2025 – Pres ent) 
+ 
+• Data Cleaning  
+(02/2025 – Prese nt) 
+ 
+• Data Visualization  
+(02/2025 – Present)  
+ 
+• Intro to Deep Learning  
+(02/2025 – Present)  
+ 
+• Intermediate Machine Learning  
+(04/2025 – Pres ent) 
+ 
+• Feature Engine ering  
+(04/2025 – Present)  
+ 
+• Comput er Vision  
+(05/2025 – Present)  
+ 
+ 
+PROJECTS  
+ 
+• RC Car  
+(11/2023 - 03/2024)  
+• TO DO List App  
+(08/2024 - Present)  
+• Medication Alarm System  
+(03/2024 - Present)  
+• BMI Cal culator  
+(08/2022 – Present)  
+• Disease Prediction Chatbot  
+(03/2025 – Present)  
+  
+ 
+ 
+EXPERIENCE  
+March  2025 - present  
+Event Organizer  • Hack Arya Verse  
+ 
+December 2024 – present  
+Coordin ator • GDG ACEIT  
+ 
+ 
+ACHIEVEMENTS  
+ 
+• Semifinal ist at Eureka organized by IIT Bombay  
+(10/2024 ) 
+ 
+• Organi zed a national level Hackathon – “Hack Arya Verse ” 
+(04/2025)  
+ 
+• Winner at S.S. Jain Subodh P.G. (Autonomous) College , 
+Jaipur  in Vigyan Sanskaar Shivir  
+(05/2024 )  
+ 
+• Winner at Arya College of Engineering & IT in Scintillation  
+(03/2024 )  
+ 
+• Achieved Top 5th position at Codefiesta 3.0 organized by 
+Global Institute of Technology, Jaipur  
+(10/2024 ) 
+ 
+• Achieved Top 5th position in 24 Hours Hackathon organized 
+at MNIT, Jaipur  
+(11/2024 ) 
+ 
+• Achieved Top 39th position at Acehack 4 .0 
+(03/2025 )
+
+==================================================
+INTERVIEW QUESTIONS AND RESPONSES
+==================================================
+
+
+QUESTION 1/7:
+Thanks for coming in today, Hardik. To start, could you walk me through your resume and highlight the experiences and skills that you feel are most relevant to a web developer role?
+
+YOUR RESPONSE:
+okay let's start with my experience is I have done medication alarm system in previous year and this year I am currently working on AI powered personalized education play from using my web developer skill and generative skill the mostly meant scale and better I in which domain I am better is like HTML is really best I can try inkem perform their better and the I can provide you with backend also like I have a good knowledge of the django so I can build your package to
+
+AI FEEDBACK:
+```json
+{
+    "feedback": "The candidate's response is a bit disorganized and difficult to follow. While they mention relevant skills like HTML and Django, the explanation lacks structure and specific examples. \n\n**Strengths:**\n*   Identifies relevant skills (HTML, Django).\n*   Mentions projects related to web development.\n\n**Areas for Improvement:**\n*   **Clarity and Structure:** The response is rambling and lacks a clear structure. The candidate should organize their thoughts before spe...
+
+SCORE: 6.0/10
+
+--------------------------------------------------
+
+QUESTION 2/7:
+You mentioned your experience with Django. Can you describe a challenging problem you faced while working with Django, and how you went about solving it?
+
+YOUR RESPONSE:
+I am working on Jingle from  2 to 3 years and the problem in which I am facing in the django is like not having enough material on the Internet to learn and how I am soldring it is by learning things from generate your eyes which are describing each and everything  in details related to django
+
+AI FEEDBACK:
+```json
+{
+    "feedback": "The candidate's response is weak and doesn't effectively answer the question. The candidate states that the challenge they face is the lack of online resources for learning Django. This isn't a specific technical problem encountered while *using* Django. It's a general statement about learning resources. The solution provided, \"learning things from generate your eyes which are describing each and everything in details related to django,\" is vague and difficult to und...
+
+SCORE: 3.0/10
+
+--------------------------------------------------
+
+QUESTION 3/7:
+You mentioned using generative AI to learn Django due to a lack of online resources. Can you give me a specific example of a Django concept or problem where you used generative AI to help you understand or solve it, and describe the prompt you used and the solution you arrived at?
+
+YOUR RESPONSE:
+are used generative AI for me to learn  the Jungle framework  are is to learn the concept of how to create a authentication system and how to save the data in the database and how to retrieve from there and display on the screen  and how to integrate it with generative AI or LLM  in the prompt are used is like Just provide me or explain me this and that topic from that particular domain and it will give me that fucking solution
+
+AI FEEDBACK:
+```json
+{
+    "feedback": "The candidate's response is somewhat vague and lacks specific details. While they mention using generative AI to learn about Django authentication, data storage, retrieval, and integration with LLMs, they don't provide a concrete example of a problem they faced or the exact prompt they used. The phrase \"Just provide me or explain me this and that topic from that particular domain and it will give me that fucking solution\" is unprofessional and doesn't demonstrate a c...
+
+SCORE: 5.0/10
+
+--------------------------------------------------
+
+QUESTION 4/7:
+Okay, so you've used generative AI to learn about Django authentication and data handling. Let's say you're building a web application with Django that requires users to upload images. Describe the steps you would take to implement image uploading, storage, and retrieval, including any security considerations you would keep in mind.
+
+YOUR RESPONSE:
+that's really her hard question but I will try to answer from best my from my side  the first your question is to upload the images of a user I am here we can upload the users image using binary coding encoding and then retrave the image in that same coding and will display on the front end  I know and there is also second method and we can save the images of the user in our own like cloud and then store the path of date folder
+
+AI FEEDBACK:
+```json
+{
+    "feedback": "The candidate acknowledges the difficulty of the question, which is acceptable. However, the initial response regarding \"binary coding encoding\" is vague and doesn't demonstrate a clear understanding of image handling in Django. While mentioning saving images to a cloud and storing the path is a valid approach, the response lacks detail and doesn't address security considerations. The candidate needs to elaborate on specific steps, Django features (like ImageField, F...
+
+SCORE: 4.0/10
+
+--------------------------------------------------
+
+QUESTION 5/7:
+You mentioned storing image paths in the cloud. Let's say you've chosen to use AWS S3 for image storage. Walk me through the process of configuring Django to work with S3, including the necessary settings, libraries, and steps to ensure secure and efficient image uploads and retrieval. What are some potential challenges you might encounter, and how would you address them?
+
+YOUR RESPONSE:
+sorry I don't know about that  I am literally sorry please keep me out of this interview
+
+AI FEEDBACK:
+```json
+{
+    "feedback": "The candidate's response is a complete 'don't know'. While honesty is appreciated, it doesn't demonstrate any problem-solving skills or willingness to learn. Given the candidate's self-proclaimed 'INTERMEDIATE' Django skill, a complete lack of knowledge about integrating with a common service like S3 is concerning. Even a high-level guess or an attempt to break down the problem would have been better. The candidate should focus on gaining practical experience with comm...
+
+SCORE: 1.0/10
+
+--------------------------------------------------
+
+QUESTION 6/7:
+Okay, let's shift gears a bit. You've listed several projects on your resume, including a "Disease Prediction Chatbot." Can you describe the architecture of that chatbot, including the technologies you used, how you handled data input and output, and the specific machine learning algorithms you implemented for disease prediction? What were some of the biggest challenges you faced in developing this project, and what did you learn from the experience?
+
+YOUR RESPONSE:
+that's really a great question from your side the disease prediction chat boards for that I have trend machine learning model on a random forest classification  I have taken some data from cable website in which there are datas related to the disease and symptoms of the  so I trend my data on the symptoms and target I kept is the diseases and then I tested have that much I am currently then I am interested how much okay I am currently working only to improve it and present you in a better way in upcoming sessions and but for now and I have used some sort of generative AI to so that I user can interactively and he is your head symptoms and get this connected by my chat what currently I am not facing any challenges just I am improving myself
+
+AI FEEDBACK:
+```json
+{
+    "feedback": "The candidate's response provides a basic overview of the Disease Prediction Chatbot project, but lacks depth and detail in several key areas. \n\nStrengths:\n*   Identifies the use of a Random Forest classification model.\n*   Mentions the data source (web data with disease and symptom information).\n*   Mentions using generative AI for user interaction.\n\nAreas for Improvement:\n*   **Architecture:** The response doesn't describe the chatbot's architecture. It needs...
+
+SCORE: 6.0/10
+
+--------------------------------------------------
+
+QUESTION 7/7:
+Okay, Hardik, let's talk about the future. Imagine you join our team. In your first 3-6 months, what specific skills or technologies would you prioritize learning to become a more effective web developer and contribute meaningfully to our projects? How would you go about learning them, and what metrics would you use to measure your progress?
+
+YOUR RESPONSE:
+the skills or Technology I will priority is learning while working with your company or team will be machine learning dead particular domain  soda I can help promote the growth of 18 and will developed and huge and more Complex project so that we can achieve a good health serving Real world problems helping common people and ending good amount of money to promote our growth and micro
+
+AI FEEDBACK:
+```json
+{
+    "feedback": "The candidate's response is somewhat vague and lacks specific details. While mentioning machine learning is relevant given their background, it doesn't directly address the immediate needs of becoming an effective *web* developer within the first 3-6 months. The response focuses more on long-term goals and the potential impact of machine learning on the company rather than the specific skills they'd acquire and how they'd learn them. There's no mention of specific web ...
+
+SCORE: 6.0/10
+
+--------------------------------------------------
+
+
+INTERVIEW SUMMARY:
+Interview Summary:
+    
+Total Score: 4.4/10
+Questions Answered: 7/7
+
+Performance Overview:
+Needs Improvement
+
+Key Strengths and Areas for Improvement will be detailed in your downloadable report.
+
+
+Generated on: August 11, 2025 at 10:29 AM

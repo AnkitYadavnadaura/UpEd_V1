@@ -1,0 +1,218 @@
+<div id="chat-container">
+  <div id="chat-box">
+    <div id="messages"></div>
+    <form id="chat-form" autocomplete="off">
+      <input id="user-input" type="text" placeholder="Type your message..." required />
+      <button id="send-btn" type="submit" aria-label="Send message">➤</button>
+    </form>
+  </div>
+</div>
+
+<style>
+:root {
+  --primary: #667eea;
+  --primary-light: #849af7;
+  --primary-dark: #425fc1;
+  --user-bg: var(--primary);
+  --bot-bg: #fff;
+  --user-text: #fff;
+  --bot-text: var(--primary-dark);
+  --border: #e3eafc;
+  --main-bg: #eef2fa;
+  --shadow: 0 4px 32px rgba(102, 126, 234, 0.10), 0 1.5px 6px rgba(66, 95, 193, 0.03);
+  --radius: 0; /* no rounded corners for full screen */
+  --radius-small: 0;
+  --font: 'Segoe UI', 'Montserrat', 'Roboto', Arial, sans-serif;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  height: 100%;
+  width: 100%;
+  background: var(--main-bg);
+  font-family: var(--font);
+}
+
+/* Full viewport container */
+body, #chat-container, #chat-box {
+  width: 100vw !important;
+  height: 100vh !important;
+  min-width: 100vw !important;
+  min-height: 100vh !important;
+  max-width: 100vw !important;
+  max-height: 100vh !important;
+  border-radius: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+}
+
+#chat-container {
+  background: white;
+  box-shadow: var(--shadow);
+  border: 1.3px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  border-radius: 0;
+  padding: 0;
+}
+
+#chat-box {
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  border-radius: 0;
+  background: #f8f8fa;
+}
+
+#messages {
+  flex: 1 1 auto;
+  padding: 20px 14px 10px 14px;
+  overflow-y: auto;
+  background: linear-gradient(160deg, #f6f7fb 70%, #eaf0fd 100%);
+  width: 100%;
+  min-height: 0;
+}
+
+.user, .bot {
+  max-width: 82%;
+  margin-bottom: 10px;
+  padding: 13px 18px;
+  border-radius: 22px;
+  font-size: 1.07em;
+  white-space: pre-wrap;
+  word-break: break-word;
+  background: var(--bot-bg);
+  color: var(--bot-text);
+  box-shadow: 0 2px 10px rgba(102,126,234,0.04);
+}
+
+.user {
+  background: linear-gradient(110deg, var(--primary-light) 20%, var(--primary) 100%);
+  color: var(--user-text);
+  align-self: flex-end;
+  margin-left: auto;
+  border-bottom-right-radius: 0;
+}
+
+.bot {
+  background: var(--bot-bg);
+  color: var(--bot-text);
+  align-self: flex-start;
+  margin-right: auto;
+  border-bottom-left-radius: 0;
+  border: 1px solid #ecf1fc;
+}
+
+#chat-form {
+  border-top: 1.2px solid var(--border);
+  background: white;
+  padding: 9px 10px 8px 10px;
+  display: flex;
+  gap: 11px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+#user-input {
+  flex: 1;
+  padding: 11px 16px;
+  border: 1.5px solid var(--border);
+  border-radius: 999px;
+  font-size: 1em;
+  outline: none;
+  background: #f9fbff;
+  transition: border 0.2s, background 0.2s;
+}
+#user-input:focus {
+  border: 1.5px solid var(--primary);
+  background: #eef3ff;
+}
+
+#send-btn {
+  background: linear-gradient(100deg, var(--primary) 72%, var(--primary-dark));
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  font-size: 1.48em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 6px rgba(102,126,234,0.12);
+  transition: background 0.18s, box-shadow 0.2s, transform 0.12s;
+}
+#send-btn:hover, #send-btn:focus {
+  background: linear-gradient(120deg, var(--primary-dark) 85%, var(--primary));
+  box-shadow: 0 2px 15px rgba(102,126,234,0.15);
+  outline: none;
+  transform: scale(1.08);
+}
+
+::-webkit-input-placeholder { color: #b0b8dd;}
+::-ms-input-placeholder { color: #b0b8dd;}
+::placeholder { color: #b0b8dd;}
+
+@media (max-width: 900px), (max-height: 900px) {
+  html, body, #chat-container, #chat-box {
+    width: 100vw !important;
+    height: 100vh !important;
+    min-width: 100vw !important;
+    min-height: 100vh !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+}
+</style>
+
+<script>
+const messagesDiv = document.getElementById('messages');
+const userInput = document.getElementById('user-input');
+const chatForm = document.getElementById('chat-form');
+
+function appendMessage(type, text) {
+    const div = document.createElement('div');
+    div.className = type;
+    div.textContent = text;
+    messagesDiv.appendChild(div);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+
+chatForm.onsubmit = async function(e) {
+    e.preventDefault();
+    const userMsg = userInput.value.trim();
+    if (!userMsg) return;
+    appendMessage('user', userMsg);
+    userInput.value = '';
+    userInput.focus();
+
+    // Bot loading placeholder
+    const loading = document.createElement('div');
+    loading.className = 'bot';
+    loading.textContent = "Typing…";
+    messagesDiv.appendChild(loading);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+    try {
+        const resp = await fetch('/uped/chatbot/', {
+            method: 'POST',
+            body: JSON.stringify({message: userMsg}),
+            headers: {'Content-Type': 'application/json'}
+        });
+        const data = await resp.json();
+        loading.remove();
+        appendMessage('bot', data.message);
+    } catch (err) {
+        loading.textContent = "Sorry, there was a network error.";
+    }
+};
+</script>

@@ -1,0 +1,109 @@
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<h2>{{error}}</h2>
+<div class="container py-5">
+  <!-- Course Header -->
+  <div class="card shadow-sm border-0 mb-4">
+    <div class="card-body text-center">
+      <h1 class="card-title fw-bold mb-2">{{ course_name }}</h1>
+      <p class="lead text-secondary mb-4">
+        Unlock new knowledge, one step at a time—your journey starts here.
+      </p>
+      <span class="badge bg-primary me-2 mb-2">Status: {{ status }}</span>
+      <span class="badge bg-success mb-2">Score: {{ score }}</span>
+      
+      <br>
+      {% if status == "Completed" %}
+  <a href="{% url 'certificate_page' course_slug=course_slug %}"
+     class="btn btn-lg btn-success fw-semibold mt-3 mb-2">
+    View Certificate
+  </a>
+{% else %}
+  {% if topics and topics.0.subtopics and topics.0.subtopics.0 %}
+    <a href="{% url 'subtopic_page' course_slug=course_slug topic_slug=topics.0.topic_slug subtopic_slug=topics.0.subtopics.0.slug %}"
+       class="btn btn-lg btn-primary fw-semibold mt-3 mb-2">
+      Start Course
+    </a>
+  {% else %}
+    <button class="btn btn-lg btn-secondary mt-3 mb-2" disabled>
+      Start Course (Coming Soon)
+    </button>
+  {% endif %}
+{% endif %}
+
+    </div>
+  </div>
+
+  <!-- Bootstrap Accordion for Topics and Subtopics -->
+  <div class="accordion" id="topicsAccordion">
+    {% for topic in topics %}
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="heading{{ forloop.counter }}">
+          <button class="accordion-button collapsed fw-semibold" type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#collapse{{ forloop.counter }}"
+                  aria-expanded="false"
+                  aria-controls="collapse{{ forloop.counter }}">
+              {{ topic.topic }}
+          </button>
+        </h2>
+        <div id="collapse{{ forloop.counter }}"
+             class="accordion-collapse collapse"
+             aria-labelledby="heading{{ forloop.counter }}"
+             data-bs-parent="#topicsAccordion">
+          <div class="accordion-body p-0">
+            {% if topic.subtopics %}
+              <ul class="list-group list-group-flush">
+                {% for sub in topic.subtopics %}
+                  <li class="list-group-item py-2">{{ sub.name }}</li>
+                {% endfor %}
+              </ul>
+            {% else %}
+              <div class="px-3 py-2 text-muted fst-italic">No subtopics for this topic yet.</div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- Bootstrap JS bundle (Popper included) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Render topicsData as JSON, not as a quoted string -->
+<script>
+const topicsData = {{ topics|safe }};
+function showSubtopics(select){
+    const idx = select.value;
+    const container = document.getElementById('subtopicsContainer');
+    container.innerHTML = "";
+    if(idx === "") {
+      container.innerHTML = '<p class="text-muted mb-1">Select a topic above to see its subtopics &amp; recommended learning resources.</p>';
+      return;
+    }
+    const subtopics = topicsData[idx]['subtopics'];
+    if(subtopics.length === 0){
+      container.innerHTML = '<p class="text-warning mb-1">No video-based subtopics found for this topic yet.</p>';
+      return;
+    }
+    let html = '<ul class="list-group list-group-flush">';
+    for(let i=0; i < subtopics.length; i++){
+        html += `<li class="list-group-item bg-transparent px-0 py-2">
+          <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between">
+            <div>
+              <span class="fw-semibold">${subtopics[i].name}</span>
+              <br>
+              ${subtopics[i].video_title ? `<span class="text-secondary small">"${subtopics[i].video_title}"</span>` : ""}
+            </div>
+            <div>
+              ${subtopics[i].video_author ? `<span class="badge bg-info text-dark me-2">${subtopics[i].video_author}</span>` : ""}
+              ${subtopics[i].video_link ? `<a href="${subtopics[i].video_link}" target="_blank" class="btn btn-sm btn-outline-primary ms-2">Watch Video</a>` : ""}
+            </div>
+          </div>
+        </li>`;
+    }
+    html += "</ul>";
+    container.innerHTML = html;
+}
+</script>
